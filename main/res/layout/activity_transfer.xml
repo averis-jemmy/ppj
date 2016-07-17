@@ -1,0 +1,96 @@
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical" >
+        
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"            
+            android:background="@drawable/my_border">
+            
+           <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"            
+            android:text="JUMLAH NOTIS :"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_marginTop="20dp"
+            android:id="@+id/tvNumberOfNotice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" 
+            android:textSize="30dp"
+            android:textStyle="bold" />
+            
+            </FrameLayout>
+            
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"            
+            android:background="@drawable/my_border">
+            
+           <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"            
+            android:text="BATERI :"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_marginTop="20dp"
+            android:id="@+id/tvBattery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" 
+            android:textSize="30dp"
+            android:textStyle="bold" />
+            
+            </FrameLayout>
+            
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"            
+            android:background="@drawable/my_border">
+            
+           <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"            
+            android:text="VERSI :"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_marginTop="20dp"
+            android:id="@+id/tvVersion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" 
+            android:textSize="30dp"
+            android:textStyle="bold" />
+            
+            </FrameLayout>
+
+	<FrameLayout
+	    android:layout_marginTop="30dp"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"            
+	            android:background="@drawable/my_border">
+	        <Button
+	            android:id="@+id/buttonUpload"
+	            android:layout_width="150dp"
+	            android:layout_height="wrap_content"
+	            android:layout_gravity="center"
+	            android:text="Muat Naik Notis" />
+	</FrameLayout>
+	
+	<FrameLayout
+	    android:layout_marginTop="30dp"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"            
+	            android:background="@drawable/my_border">
+	        <Button
+	            android:id="@+id/buttonDownload"
+	            android:layout_width="150dp"
+	            android:layout_height="wrap_content"
+	            android:layout_gravity="center"
+	            android:text="Muat Turun Fail Handheld" />
+	</FrameLayout>
+
+</LinearLayout>

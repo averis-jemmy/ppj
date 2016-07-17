@@ -1,0 +1,145 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/LinearLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bgempty"
+    android:orientation="vertical"
+    tools:context=".MaklumatActivity" >
+       
+    <ScrollView
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/TrafikLayout">
+     
+    <TextView
+        android:id="@+id/tvTrafikNoKenderaan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No Kenderaan:"
+        android:textColor="@color/red_base"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <EditText
+        android:id="@+id/etTrafikNoKenderaan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/textbox"
+        android:layout_margin="3dp"
+        android:inputType="textVisiblePassword|textCapCharacters|textCapWords"
+        android:maxLength="20"
+        android:singleLine="true"
+        android:ems="10" >
+        <requestFocus />
+    </EditText>
+    <TextView
+        android:id="@+id/tvTrafikNoCukaiJalan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No Cukai Jalan:"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <EditText
+        android:id="@+id/etTrafikNoCukaiJalan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/textbox"
+        android:layout_margin="3dp"
+        android:singleLine="true"
+        android:maxLength="20"
+        android:inputType="textVisiblePassword|textCapCharacters|textCapWords"
+        android:ems="10" >
+    </EditText>
+     <TextView
+        android:id="@+id/tvTrafikJenama"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Jenama:"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <Spinner
+        android:id="@+id/spinnerTrafikJenama"
+        android:layout_width="match_parent"
+        android:layout_height="36dp" 
+        android:background="@drawable/slim_spinner_normal"
+        android:spinnerMode="dropdown"/>
+    
+    <EditText
+        android:id="@+id/etTrafikVehicleMake"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/textbox"
+        android:layout_margin="3dp"
+        android:singleLine="true"
+        android:inputType="textVisiblePassword|textCapCharacters|textCapWords"
+        android:maxLength="20"
+        android:ems="10"
+        android:visibility="gone" />
+    <TextView
+        android:id="@+id/tvTrafikModel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Model:"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <Spinner
+        android:id="@+id/spinnerTrafikModel"
+        android:layout_width="match_parent"
+        android:layout_height="36dp" 
+        android:background="@drawable/slim_spinner_normal"
+        android:spinnerMode="dropdown"/>
+    
+    <EditText
+        android:id="@+id/etTrafikVehicleModel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/textbox"
+        android:layout_margin="3dp"
+        android:inputType="textVisiblePassword|textCapCharacters|textCapWords"
+        android:singleLine="true"
+        android:maxLength="20"
+        android:ems="10"
+        android:visibility="gone" />
+    
+    <TextView
+        android:id="@+id/tvTrafikJenisBadan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Jenis Badan:"
+        android:textColor="@color/red_base"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <Spinner
+        android:id="@+id/spinnerTrafikJenisBadan"
+        android:layout_width="match_parent"
+        android:layout_height="36dp" 
+        android:background="@drawable/slim_spinner_normal"
+        android:spinnerMode="dropdown"/>
+    </LinearLayout>
+ <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+		
+	    <Button
+	        android:id="@+id/btn_camera"
+	        style="@style/main_menu"
+	        android:layout_width="180dp"
+	        android:layout_height="wrap_content"       
+	        android:background="@drawable/btn_kamera_bg"	
+	        android:layout_centerInParent="true" 						        
+	        android:text="" />   
+  
+    </RelativeLayout>
+</LinearLayout>
+</ScrollView>
+</LinearLayout>

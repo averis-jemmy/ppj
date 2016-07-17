@@ -1,0 +1,172 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/LinearLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/bgempty"
+    tools:context=".RingkasanActivity" >
+    <ScrollView
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+             <TextView
+            android:id="@+id/tvSummaryNoKenderaan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No. Kenderaan:"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <EditText
+            android:id="@+id/etSummaryNoKenderaan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/textbox"
+            android:ems="10" 
+            android:enabled="false"/>  
+             <TextView
+            android:id="@+id/tvSummaryNoCukaiJalan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No. Cukai Jalan:"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <EditText
+            android:id="@+id/etSummaryNoCukaiJalan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/textbox"
+            android:ems="10"
+            android:enabled="false" />  
+             <TextView
+            android:id="@+id/tvSummaryJenama"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Jenama:"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <EditText
+            android:id="@+id/etSummaryJenama"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/textbox"
+            android:ems="10" 
+            android:enabled="false"/>  
+             <TextView
+            android:id="@+id/tvSummaryModel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Model:"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <EditText
+            android:id="@+id/etSummaryModel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/textbox"
+            android:ems="10"
+            android:enabled="false" />  
+             <TextView
+            android:id="@+id/tvSummaryTempatJalan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tempat / Jalan:"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <EditText
+            android:id="@+id/etSummaryTempatJalan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/textbox"
+            android:ems="10"
+            android:enabled="false" />  
+             <TextView
+            android:id="@+id/tvSummaryUndangUndang"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Peruntukan Undang-Undang:"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <EditText
+            android:id="@+id/etSummaryUndangUndang"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/textbox"
+            android:ems="10" 
+            android:enabled="false"/>  
+             <TextView
+            android:id="@+id/tvSummarySeksyenKaedah"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Seksyen / Kaedah:"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <EditText
+            android:id="@+id/etSummarySeksyenKaedah"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/textbox"
+            android:ems="10" 
+            android:enabled="false"/>  
+             <TextView
+            android:id="@+id/tvSummaryTarikh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tarikh:"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <EditText
+            android:id="@+id/etSummaryTarikh"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/textbox"
+            android:ems="10" 
+            android:enabled="false" />  
+             <TextView
+            android:id="@+id/tvSummaryMasa"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Masa:"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <EditText
+            android:id="@+id/etSummaryMasa"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/textbox"
+            android:ems="10" 
+            android:enabled="false" />  
+        <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+     <Button
+        android:id="@+id/btnstatus"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"        
+       	android:background="@drawable/btn_status_bg"
+        android:text="" />
+
+    <Button
+        android:id="@+id/btncetak"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"       
+        android:background="@drawable/btn_cetak_bg"
+        android:text="" />
+
+    <Button
+        android:id="@+id/btnlogout"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn_status_bg"
+        android:text="" />
+    </LinearLayout>
+          </LinearLayout>
+          
+          </ScrollView>
+
+</LinearLayout>

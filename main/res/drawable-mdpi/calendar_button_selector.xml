@@ -1,0 +1,7 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:drawable="@drawable/calendar_bg_orange" android:state_pressed="true"/> <!-- pressed -->
+    <item android:drawable="@drawable/calendar_bg_orange" android:state_focused="true"/> <!-- focused -->
+    <item android:drawable="@drawable/calendar_tile_small"/> <!-- default -->
+
+</selector>

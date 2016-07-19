@@ -39,7 +39,6 @@ public class MainActivity extends Activity {
 	private EditText txtMACAddress;
 	private CheckBox chkNewPrinter;
 	private String address;
-
 	
 	static Handler timeHandler;
 
@@ -403,11 +402,10 @@ public class MainActivity extends Activity {
     
     // display current date
 	public void setCurrentDate() {
-
-		TextView tvDate = (TextView) findViewById(R.id.tvDate);
-		tvDate.setText(CacheManager.GetDate());
-		TextView tvTime = (TextView) findViewById(R.id.tvTime);
-		tvTime.setText(CacheManager.GetTime().toUpperCase());
+		EditText etDate = (EditText) findViewById(R.id.etDate);
+		etDate.setText(CacheManager.GetDate());
+		EditText etTime = (EditText) findViewById(R.id.etTime);
+		etTime.setText(CacheManager.GetTime().toUpperCase());
 	}
 	/*
 	 * (non-Javadoc)

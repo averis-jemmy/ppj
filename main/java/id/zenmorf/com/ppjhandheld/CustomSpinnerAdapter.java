@@ -22,15 +22,7 @@ public class CustomSpinnerAdapter  implements SpinnerAdapter, ListAdapter
 	ArrayList<BaseEntity> m_data = new ArrayList<BaseEntity>();
 	boolean codeDisplay = false;
 	
-	
-	/**
-	 * Instantiates a new DBKL spiner adapter.
-	 * 
-	 * @param <T>
-	 *            the generic type
-	 * @param data
-	 *            the data
-	 */
+
 	public <T> CustomSpinnerAdapter(ArrayList<T> data)
 	{
 		m_data.add(new BaseEntity("", "Pilih"));
@@ -92,7 +84,7 @@ public class CustomSpinnerAdapter  implements SpinnerAdapter, ListAdapter
 	{
 		if (convertView == null)
 		{
-			LayoutInflater vi = (LayoutInflater) CacheManager.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			LayoutInflater vi = (LayoutInflater) CacheManager.mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			convertView = vi.inflate(android.R.layout.simple_spinner_dropdown_item, null);
 			convertView.setBackgroundColor(Color.rgb(178, 235, 254));
 			
@@ -164,7 +156,7 @@ public class CustomSpinnerAdapter  implements SpinnerAdapter, ListAdapter
 	{
 		if (convertView == null)
 		{
-			LayoutInflater vi = (LayoutInflater)CacheManager.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			LayoutInflater vi = (LayoutInflater)CacheManager.mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			convertView = vi.inflate(android.R.layout.simple_spinner_item, null);
 		}
 		TextView textView = (TextView)

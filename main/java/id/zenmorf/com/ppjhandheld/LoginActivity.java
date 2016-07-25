@@ -24,14 +24,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 public class LoginActivity extends Activity {
-
-	private Spinner spinnerZone;
 	private EditText txtUserName;
 	private EditText txtPassword;
 	private Button btnLogin;
-	static Handler timeHandler;
-	
-	//private String selectOfficerZone;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -39,27 +35,9 @@ public class LoginActivity extends Activity {
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_login);
-		addItemsOnSpinnerZone();		
+
 		btnLogin = (Button)findViewById(R.id.btnLogin);
 		btnLogin.setOnClickListener(btnloginListener);
-		
-		
-		timeHandler = new Handler();
-		Runnable run = new Runnable() {
-
-	        @Override
-	        public void run() {
-	        	Time now = new Time();
-	        	now.setToNow();
-	        	TextView tvDateTime = (TextView) findViewById(R.id.tvDateTime);
-	        	tvDateTime.setText("  " + CacheManager.GetDate() + "\r\n " + CacheManager.GetTime().toUpperCase());
-	        	timeHandler.postDelayed(this, 500);
-	        }
-	    };
-	    timeHandler.postDelayed(run, 500);
-	    
-		TextView tvHandheldID = (TextView) findViewById(R.id.tvDeviceID);
-		tvHandheldID.setText(SettingsHelper.DeviceID);
 	}
 	
 	private OnClickListener btnloginListener = new OnClickListener()
@@ -102,10 +80,8 @@ public class LoginActivity extends Activity {
 				m_ProgressDialog.dismiss();
 			CacheManager.IsClearData = true;
 			CacheManager.SummonIssuanceInfo = new PPJSummonIssuanceInfo();
-			spinnerZone = (Spinner) findViewById(R.id.spinnerZone);
-			CacheManager.officerZone = spinnerZone.getSelectedItem().toString();
 			CacheManager.UserId = txtUserName.getText().toString();
-			Intent i = new Intent(this,NoticesActivity.class);
+			Intent i = new Intent(this, NoticeIssuanceActivity.class);
 			startActivity(i);
 			finish();
 		}
@@ -149,50 +125,10 @@ public class LoginActivity extends Activity {
 			CustomAlertDialog.Show(LoginActivity.this, "LOGIN", "Sila Masukkan Password", 3);
 			return false;
 		}
-		spinnerZone = (Spinner) findViewById(R.id.spinnerZone);
-		if(spinnerZone.getSelectedItemPosition() <= 0)
-		{
-			CustomAlertDialog.Show(LoginActivity.this, "LOGIN", "Sila Pilih Bhg/Zon/Unit", 3);
-			return false;
-		}
 		
 		return true;
 	}
-	
-	public void addListenerOnSpinnerItemSelection() {
-		spinnerZone = (Spinner) findViewById(R.id.spinnerZone);
-		spinnerZone.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() 
-		{
-			/**
-			 * Called when a new item was selected (in the Spinner)
-			 */
-			@Override
-			public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
-			{
-				//BaseEntity g = (BaseEntity) parent.getItemAtPosition(pos);
-				//String label = parent.getItemAtPosition(pos).toString();
-				//selectOfficerZone = label;
-			}
 
-			@Override
-			public void onNothingSelected(AdapterView<?> parent)
-			{
-				// Do nothing.
-			}
-		});
-	  }
-
-	public void addItemsOnSpinnerZone() {
-		 
-		 	spinnerZone = (Spinner) findViewById(R.id.spinnerZone);
-		 	 List<String> list = DbLocal.GetListForOfficerZone(this.getApplicationContext());
-		 	ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, list);
-		 	dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		 	dataAdapter.insert("--Sila Pilih--", 0);
-		 	//DBKLSpinnerAdapter adapter = new DBKLSpinnerAdapter(DbLocal.GetOfficerZone(this.getApplicationContext()));
-		 	spinnerZone.setAdapter(dataAdapter);
-		 	spinnerZone.setSelection(0);
-		  }
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -211,6 +147,7 @@ public class LoginActivity extends Activity {
 		}
 		return super.onKeyDown(keyCode, event);
 	}
+
 	@Override
 	public void onBackPressed()
 	{
@@ -218,25 +155,17 @@ public class LoginActivity extends Activity {
   	  //LoginActivity.this.startActivity(i);
 		return;
 	}
-	private Window w;
+
 	@Override
 	public void onResume()
 	{
-		w = this.getWindow();
-	    w.addFlags(LayoutParams.FLAG_DISMISS_KEYGUARD);
-	    w.addFlags(LayoutParams.FLAG_SHOW_WHEN_LOCKED);
-	    w.addFlags(LayoutParams.FLAG_TURN_SCREEN_ON);
-	    
 		txtUserName=(EditText)findViewById(R.id.etUserName);
 		txtPassword = (EditText)findViewById(R.id.etPassword);
-		spinnerZone = (Spinner) findViewById(R.id.spinnerZone);
 		txtUserName.setText("");
 		txtPassword.setText("");
-		spinnerZone.setSelection(0);
-		CacheManager.LockKeygaurd(getApplicationContext());
-		CacheManager.IsAppOnRunning = true;
 		super.onResume();
 	}
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
@@ -248,8 +177,6 @@ public class LoginActivity extends Activity {
 	@Override
 	public void onStart()
 	{
-		CacheManager.LockKeygaurd(getApplicationContext());
-		CacheManager.IsAppOnRunning = true;
 		super.onStart();
 	}
 }

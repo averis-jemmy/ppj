@@ -206,7 +206,7 @@ public class BluetoothSerialService {
         // Send a failure message back to the Activity
         Message msg = mHandler.obtainMessage(CacheManager.MESSAGE_TOAST);
         Bundle bundle = new Bundle();
-        bundle.putString(CacheManager.TOAST, "Device connection was lost");
+        bundle.putString(CacheManager.TOAST, "Device connection is lost");
         msg.setData(bundle);
         mHandler.sendMessage(msg);
     }

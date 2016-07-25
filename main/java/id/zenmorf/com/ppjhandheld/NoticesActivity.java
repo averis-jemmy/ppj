@@ -95,25 +95,16 @@ public class NoticesActivity extends TabActivity  {
 		//NoticesActivity.this.startActivity(i);
 		return;
 	}
-	private Window w;
+
 	@Override
 	public void onResume()
 	{
-		w = this.getWindow();
-	    w.addFlags(LayoutParams.FLAG_DISMISS_KEYGUARD);
-	    w.addFlags(LayoutParams.FLAG_SHOW_WHEN_LOCKED);
-	    w.addFlags(LayoutParams.FLAG_TURN_SCREEN_ON);
-	    
-		CacheManager.LockKeygaurd(getApplicationContext());
-		CacheManager.IsAppOnRunning = true;
 		super.onResume();
 	}
 
 	@Override
 	public void onStart()
 	{
-		CacheManager.LockKeygaurd(getApplicationContext());
-		CacheManager.IsAppOnRunning = true;
 		super.onStart();
 	}
 

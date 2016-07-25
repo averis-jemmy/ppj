@@ -11,12 +11,6 @@ public class CustomMessage {
 	/** The Xml document. */
 	public Document XmlDocument;
 
-	/**
-	 * Instantiates a new dbkl message.
-	 * 
-	 * @param XmlSource
-	 *            the xml source
-	 */
 	public CustomMessage(String XmlSource)
 	{
 

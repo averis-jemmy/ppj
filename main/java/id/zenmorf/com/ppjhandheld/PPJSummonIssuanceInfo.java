@@ -1,6 +1,8 @@
 package id.zenmorf.com.ppjhandheld;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class PPJSummonIssuanceInfo
 {
@@ -39,10 +41,9 @@ public class PPJSummonIssuanceInfo
 	public String CompoundAmountDesc3="";
 	public String CompoundAmountDesc4="";
 	public String CompoundAmountDesc5="";
-	public String[] ImageLocation = new String[5];
+	public List<String> ImageLocation = new ArrayList<String>();
 
 	public Date OffenceDateTime = null;
-	public String OfficerZone = "";
 	public String NoticeSerialNo = "";
 	public String Advertisement = "";
 	public Date CompoundDate = null;
@@ -68,5 +69,4 @@ public class PPJSummonIssuanceInfo
 		OffenceLocationDetails = "DATA";
 		PostNo = "DATA";
 	}
-	
 }

@@ -66,10 +66,6 @@ import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 
 public class TransferActivity extends Activity {
-	Runnable connectFTP;
-	private int batteryPercentage = 0;
-	TextView tvBattery;
-	TextView tvVersion;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -78,161 +74,21 @@ public class TransferActivity extends Activity {
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_transfer);
 		
-		Button btnUpload = (Button) findViewById(R.id.buttonUpload);
-		btnUpload.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				connectFTP = new Runnable() {
-					@Override
-					public void run()
-					{
-						Looper.prepare();
-						//UploadFile();
-						Looper.loop();
-						Looper.myLooper().quit();
-					}
-				};
-				m_ProgressDialog = new ProgressDialog(TransferActivity.this);
-				m_ProgressDialog.setMessage("Loading");
-				m_ProgressDialog.setTitle("");
-				m_ProgressDialog.setCancelable(false);
-				m_ProgressDialog.setIndeterminate(true);
-				m_ProgressDialog.show();
-				
-				Thread thread = new Thread(null, connectFTP, "FTPProcess");
-				thread.start();
-				//ConnectFTP();
-			}
-		});
-		
-		Button btnDownload = (Button) findViewById(R.id.buttonDownload);
+		Button btnDownload = (Button) findViewById(R.id.btnDownload);
 		btnDownload.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				connectFTP = new Runnable() {
-					@Override
-					public void run()
-					{
-						Looper.prepare();
-						//DownloadFile();
-						Looper.loop();
-						Looper.myLooper().quit();
-					}
-				};
-				m_ProgressDialog = new ProgressDialog(TransferActivity.this);
-				m_ProgressDialog.setMessage("Loading");
-				m_ProgressDialog.setTitle("");
-				m_ProgressDialog.setCancelable(false);
-				m_ProgressDialog.setIndeterminate(true);
-				m_ProgressDialog.show();
-				
-				Thread thread = new Thread(null, connectFTP, "FTPProcess");
-				thread.start();
-				//ConnectFTP();
+
 			}
 		});
 		
-		TextView tvNumberOfNotices = (TextView) findViewById(R.id.tvNumberOfNotice);
-		//tvNumberOfNotices.setText(String.valueOf(GetNumberOfNotices()));
-		
-		tvVersion = (TextView) findViewById(R.id.tvVersion);
-		tvVersion.setText("1.0.0.0");
-		
-	    registerBatteryLevelReceiver();
+		EditText etNumberOfNotices = (EditText) findViewById(R.id.etNumberOfNotice);
+		//etNumberOfNotices.setText(String.valueOf(GetNumberOfNotices()));
+
+		EditText etVersion = (EditText) findViewById(R.id.etVersion);
+		etVersion.setText(R.string.version);
 	}
-	
-	private BroadcastReceiver battery_receiver = new BroadcastReceiver()
-    {
-            @Override
-            public void onReceive(Context context, Intent intent)
-            {
-                    boolean isPresent = intent.getBooleanExtra("present", false);
-                    String technology = intent.getStringExtra("technology");
-                    int plugged = intent.getIntExtra("plugged", -1);
-                    int scale = intent.getIntExtra("scale", -1);
-                    int health = intent.getIntExtra("health", 0);
-                    int status = intent.getIntExtra("status", 0);
-                    int rawlevel = intent.getIntExtra("level", -1);
-        int level = 0;
-        
-        Bundle bundle = intent.getExtras();
-        
-        if(isPresent)
-        {
-                if (rawlevel >= 0 && scale > 0) {
-                    level = (rawlevel * 100) / scale;
-                }
-                
-                String info = "Battery Level: " + level + "%\n";
-                
-                info += ("Technology: " + technology + "\n");
-                info += ("Plugged: " + getPlugTypeString(plugged) + "\n");
-                info += ("Health: " + getHealthString(health) + "\n");
-                info += ("Status: " + getStatusString(status) + "\n");
-                
-                //setBatteryLevelText(info + "\n\n" + bundle.toString());
-                batteryPercentage = level;
-                tvBattery = (TextView) findViewById(R.id.tvBattery);
-                tvBattery.setText(String.valueOf(batteryPercentage));
-        }
-        else
-        {
-            //setBatteryLevelText("Battery not present!!!");
-        }
-      }
-    };
-    
-    private String getPlugTypeString(int plugged){
-            String plugType = "Unknown";
-            
-            switch(plugged)
-            {
-                    case BatteryManager.BATTERY_PLUGGED_AC: plugType = "AC";        break;
-                    case BatteryManager.BATTERY_PLUGGED_USB: plugType = "USB";      break;
-            }
-            
-            return plugType;
-    }
-    
-    private String getHealthString(int health)
-    {
-            String healthString = "Unknown";
-            
-            switch(health)
-            {
-                    case BatteryManager.BATTERY_HEALTH_DEAD: healthString = "Dead"; break;
-                    case BatteryManager.BATTERY_HEALTH_GOOD: healthString = "Good"; break;
-                    case BatteryManager.BATTERY_HEALTH_OVER_VOLTAGE: healthString = "Over Voltage"; break;
-                    case BatteryManager.BATTERY_HEALTH_OVERHEAT: healthString = "Over Heat"; break;
-                    case BatteryManager.BATTERY_HEALTH_UNSPECIFIED_FAILURE: healthString = "Failure"; break;
-            }
-            
-            return healthString;
-    }
-    
-    private String getStatusString(int status)
-    {
-            String statusString = "Unknown";
-            
-            switch(status)
-            {
-                    case BatteryManager.BATTERY_STATUS_CHARGING: statusString = "Charging"; break;
-                    case BatteryManager.BATTERY_STATUS_DISCHARGING: statusString = "Discharging"; break;
-                    case BatteryManager.BATTERY_STATUS_FULL: statusString = "Full"; break;
-                    case BatteryManager.BATTERY_STATUS_NOT_CHARGING: statusString = "Not Charging"; break;
-            }
-            
-            return statusString;
-    }
-    
-    private void registerBatteryLevelReceiver(){
-            IntentFilter filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-            registerReceiver(battery_receiver, filter);
-    }
 	
 	private ProgressDialog m_ProgressDialog = null;
 
@@ -270,7 +126,6 @@ public class TransferActivity extends Activity {
     }
     
     protected void onDestroy() {
-		unregisterReceiver(battery_receiver);
 		super.onDestroy();
 	}
     
@@ -288,32 +143,16 @@ public class TransferActivity extends Activity {
 		}
 		return super.onKeyDown(keyCode, event);
 	}
-	@Override
-	public void onBackPressed()
-	{
-		Intent i = new Intent(this, MainActivity.class);
-		startActivity(i);
-		return;
-	}
-	private Window w;
+
 	@Override
 	public void onResume()
 	{
-		w = this.getWindow();
-	    w.addFlags(LayoutParams.FLAG_DISMISS_KEYGUARD);
-	    w.addFlags(LayoutParams.FLAG_SHOW_WHEN_LOCKED);
-	    w.addFlags(LayoutParams.FLAG_TURN_SCREEN_ON);
-	    
-		CacheManager.LockKeygaurd(getApplicationContext());
-		CacheManager.IsAppOnRunning = true;
 		super.onResume();
 	}
 	
 	@Override
 	public void onStart()
 	{
-		CacheManager.LockKeygaurd(getApplicationContext());
-		CacheManager.IsAppOnRunning = true;
 		super.onStart();
 	}
 	

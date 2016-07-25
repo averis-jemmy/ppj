@@ -41,7 +41,6 @@ public class KesalahanActivity extends Activity {
 		etKesalahan = (EditText) findViewById(R.id.etKesalahan);
 		etKesalahan.setEnabled(false);
 		addItemsOnSpinnerOffenceActAndLocation();
-		SetLayout();
 	}
 
 	public void addItemsOnSpinnerOffenceActAndLocation() {
@@ -159,30 +158,13 @@ public class KesalahanActivity extends Activity {
 	public void SectionRefreshData(String offenceSectionCode, String offenceActDescription)
 	{
 		etKesalahan = (EditText) findViewById(R.id.etKesalahan);
-		Cursor cur = DbLocal.GetListForOffenceSectionCodeSpinner(this.getApplicationContext(),offenceSectionCode, offenceActDescription);
-		if( (cur != null) && cur.moveToFirst() )
-		{
-			cur.moveToFirst();
-			do
-			{	
-				etKesalahan.setText(cur.getString(2));
-            } while (cur.moveToNext());
-			cur.close();
-        }
+		List<String> list = DbLocal.GetListForOffenceSectionCodeSpinner(this.getApplicationContext(), offenceSectionCode, offenceActDescription);
+		etKesalahan.setText(list.get(2));
 	}
 	public List<String>PopulateOffenceSection(String offenceShortDescription)
 	{		
-		List<String> list = new ArrayList<String>();
-		Cursor cur = DbLocal.GetListForOffenceSectionSpinner(this.getApplicationContext(),offenceShortDescription);
-		if( (cur != null) && cur.moveToFirst() )
-		{
-			cur.moveToFirst();
-			do
-			{				
-				list.add(cur.getString(2) + " " +cur.getString(3) );
-            } while (cur.moveToNext());
-			cur.close();
-        }
+		List<String> list = DbLocal.GetListForOffenceSectionSpinner(this.getApplicationContext(),offenceShortDescription);
+
 		return list;
 	}
 	public void RefreshData(String offenceShortDescription)
@@ -247,18 +229,11 @@ public class KesalahanActivity extends Activity {
 	public void SectionUpdate(String offenceSectionCode, String offenceActDescription)
 	{
 		etKesalahan = (EditText) findViewById(R.id.etKesalahan);
-		Cursor cur = DbLocal.GetListForOffenceSectionCodeSpinner(this.getApplicationContext(),offenceSectionCode, offenceActDescription);
-		if( (cur != null) && cur.moveToFirst() )
-		{
-			cur.moveToFirst();
-			do
-			{
-				CacheManager.SummonIssuanceInfo.OffenceActCode = cur.getString(0);
-				CacheManager.SummonIssuanceInfo.OffenceSectionCode = cur.getString(1);
-            } while (cur.moveToNext());
-			cur.close();
-        }
+		List<String> list = DbLocal.GetListForOffenceSectionCodeSpinner(this.getApplicationContext(),offenceSectionCode, offenceActDescription);
+		CacheManager.SummonIssuanceInfo.OffenceActCode  = list.get(0);
+		CacheManager.SummonIssuanceInfo.OffenceSectionCode  = list.get(1);
 	}
+
 	public void SaveData()
 	{		
 		Spinner sOffenceAct = (Spinner) findViewById(R.id.spinnerundangundang);
@@ -320,24 +295,24 @@ public class KesalahanActivity extends Activity {
 		EditText tButirLokasi = (EditText)findViewById(R.id.etButiranLokasi);
 		CacheManager.SummonIssuanceInfo.OffenceLocationDetails = tButirLokasi.getText().toString();
 
-		CacheManager.SummonIssuanceInfo.Advertisement = DbLocal.GetAdvertisement(CacheManager.context);
+		CacheManager.SummonIssuanceInfo.Advertisement = DbLocal.GetAdvertisement(CacheManager.mContext);
 		String delegate = "yy";         
 		String year = (String) DateFormat.format(delegate,Calendar.getInstance().getTime()); 
 		
 		CacheManager.SummonIssuanceInfo.NoticeSerialNo = SettingsHelper.DeviceID +  year + SettingsHelper.DeviceSerialNumber;
-		CacheManager.SummonIssuanceInfo.OfficerZone = CacheManager.officerZone;
+		//CacheManager.SummonIssuanceInfo.OfficerZone = CacheManager.officerZone;
 		
 		EditText tNoPetakTiang = (EditText)findViewById(R.id.etNoPetakTiang);
 		CacheManager.SummonIssuanceInfo.PostNo = tNoPetakTiang.getText().toString();
 		
 		if(CacheManager.SummonIssuanceInfo.VehicleType.length() != 0)
 			{
-				CacheManager.SummonIssuanceInfo.CompoundAmount1 = DbLocal.GetCompundAmountFromVehicleType(CacheManager.context, CacheManager.SummonIssuanceInfo.VehicleType);
+				CacheManager.SummonIssuanceInfo.CompoundAmount1 = DbLocal.GetCompundAmountFromVehicleType(CacheManager.mContext, CacheManager.SummonIssuanceInfo.VehicleType);
 			}
 		
 		if(CacheManager.SummonIssuanceInfo.OffenceSectionCode.length() != 0)
 		{
-			Cursor compoundList = DbLocal.GetCompundAmountDescription(CacheManager.context, CacheManager.SummonIssuanceInfo.OffenceSectionCode, CacheManager.SummonIssuanceInfo.OffenceActCode);
+			Cursor compoundList = DbLocal.GetCompundAmountDescription(CacheManager.mContext, CacheManager.SummonIssuanceInfo.OffenceSectionCode, CacheManager.SummonIssuanceInfo.OffenceActCode);
 			try
 			{
 				if(compoundList != null)
@@ -432,49 +407,29 @@ public class KesalahanActivity extends Activity {
 		sTempatJalan.setSelection(CacheManager.SummonIssuanceInfo.OffenceLocationAreaPos);
 	}
 
-	private void SetLayout()
-	{
-		TextView tvPostNo = (TextView) findViewById(R.id.tvNoPetakTiang);
-		EditText tNoPetakTiang = (EditText)findViewById(R.id.etNoPetakTiang);
-		tvPostNo.setVisibility(View.GONE);
-		tNoPetakTiang.setVisibility(View.GONE);
-		
-		tvPostNo.setVisibility(View.VISIBLE);
-		tNoPetakTiang.setVisibility(View.VISIBLE);
-	}
-
 	@Override
 	public void onPause()
 	{
 		SaveData();
 		super.onPause();
 	}
-	private Window w;
+
 	@Override
 	public void onResume()
 	{
-		w = this.getWindow();
-	    w.addFlags(LayoutParams.FLAG_DISMISS_KEYGUARD);
-	    w.addFlags(LayoutParams.FLAG_SHOW_WHEN_LOCKED);
-	    w.addFlags(LayoutParams.FLAG_TURN_SCREEN_ON);
-	    
 		//SaveData();
-		SetLayout();
 		if(CacheManager.IsClearKesalahan)
 		{
 			ClearData();
 			FillData();
 			CacheManager.IsClearKesalahan = false;
 		}
-		CacheManager.LockKeygaurd(getApplicationContext());
-		CacheManager.IsAppOnRunning = true;
 		super.onResume();
 	}
+
 	@Override
 	public void onStart()
 	{
-		CacheManager.LockKeygaurd(getApplicationContext());
-		CacheManager.IsAppOnRunning = true;
 		//if(!CacheManager.IsClearKesalahan)
 			FillData();
 		

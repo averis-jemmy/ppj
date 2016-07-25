@@ -24,6 +24,7 @@ import java.util.logging.SimpleFormatter;
 
 import android.app.KeyguardManager;
 import android.app.KeyguardManager.KeyguardLock;
+import android.app.NotificationManager;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.net.wifi.WifiManager;
@@ -39,15 +40,8 @@ import android.widget.Toast;
 @SuppressWarnings("deprecation")
 public final class CacheManager 
 {
-
 	/** The User id. */
 	public static String UserId = "";
-
-	/** The User name. */
-	public static String UserName = "";
-
-	/** The Current password. */
-	public static String CurrentPassword = "";
 
 	public static String officerCode = "";
 	public static String officerId = "";
@@ -56,49 +50,28 @@ public final class CacheManager
 	public static String officerName = "";
 	public static String officerZone = "";
 	public static String officerDetails = "";
+
+	public static int imageIndex = 0;
+
 	/** The Log enabled. */
 	public static boolean LogEnabled = false;
-	
-	public static boolean isCheckedRoadTaxExpiryDate = false;
-	public static boolean isCheckedLicenseExpiryDate = false;
-	public static boolean isCheckedCourtDate = false;
+
+	public static int BatteryPercentage = 100;
 	
 	public static BluetoothSerialService mSerialService = null;
 	
-	public static Context context;
+	public static Context mContext;
 
-	/** The Is lock. */
-	public static boolean IsLock = true;
-	
-	/** The Is login. */
-	public static boolean IsLogin = false;
-	
-	/** The Is lock back button. */
-	public static boolean IsLockBackButton = false;
-
-	/** The retain input values. */
-	public static ArrayList<String> retainInputValues = new ArrayList<String>();
 	/** The Summon issuance info. */
 	public static PPJSummonIssuanceInfo SummonIssuanceInfo;
 
-	public static String functionArray = "";
-	
-	public static int noticeType = 0;
+    public static NotificationManager NotificationManagerInstance;
 
-	public static boolean IsAppOnRunning = false;
-	
-	public static int InstallWaitingTime = 0;
-	
-	public static String AlertMessage = "";
-	
-	public static String SpecialNumberPlate = "";
-	
+	public static boolean IsNewNotice = true;
+
 	public static boolean IsClearData = false;
 	public static boolean IsClearKesalahan = false;
-	public static boolean IsTypeChanged = true;
 	public static boolean IsNewSummonsCamera = true;
-	
-	public static boolean IsYes = false;
 	
 	// Constants that indicate the current connection state
     public static final int STATE_NONE = 0;       // we're doing nothing
@@ -136,7 +109,7 @@ public final class CacheManager
             case MESSAGE_DEVICE_NAME:
                 break;
             case MESSAGE_TOAST:
-                Toast.makeText(CacheManager.context, msg.getData().getString(TOAST),
+                Toast.makeText(CacheManager.mContext, msg.getData().getString(TOAST),
                                Toast.LENGTH_SHORT).show();
                 break;
             }
@@ -158,6 +131,19 @@ public final class CacheManager
 		Date compoundDate = addDate(new Date(), 28);
         return  compoundDate; 
 	}
+
+    public static String CompileAddress(String address)
+    {
+        String strTemp = "";
+        for(int i=0;i<address.length();i++)
+        {
+            strTemp += address.charAt(i);
+            if(i%2 == 1 && i != (address.length() - 1))
+                strTemp += ':';
+        }
+
+        return strTemp;
+    }
 	
 	public static boolean CheckBluetoothStatus()
 	{
@@ -181,32 +167,14 @@ public final class CacheManager
 	
 	public static void DisableWifi()
 	{
-		WifiManager wifiManager = (WifiManager)context.getSystemService(Context.WIFI_SERVICE);
+		WifiManager wifiManager = (WifiManager)mContext.getSystemService(Context.WIFI_SERVICE);
 		wifiManager.setWifiEnabled(false);
 	}
 	
 	public static void EnableWifi()
 	{
-		WifiManager wifiManager = (WifiManager)context.getSystemService(Context.WIFI_SERVICE);
+		WifiManager wifiManager = (WifiManager)mContext.getSystemService(Context.WIFI_SERVICE);
 		wifiManager.setWifiEnabled(true);
-	}
-	
-	public static Date GetSummonsCourtDate()
-	{
-		Date compoundDate = addDate(new Date(), 28);
-		Date courtDate = addMonth(compoundDate, 1);
-		switch (courtDate.getDay())
-		{
-		case 6:
-			courtDate = addDate(courtDate, 2);
-			break;
-		case 0:
-			courtDate = addDate(courtDate, 1);
-			break;
-		default:
-			break;
-		}
-        return  courtDate; 
 	}
 	
 	public static String GetOtherDateString(Date compoundDate)
@@ -237,26 +205,6 @@ public final class CacheManager
 
 		return date;
 	}
-	
-	public static void saveProperties(String key, String value) throws IOException {
-	  	  String[] fileList = { "app.properties" };
-	  	  Properties prop = new Properties();
-	  	  for (int i = fileList.length - 1; i >= 0; i--) {
-	  	     String file = fileList[i];
-	  	     try {
-	  	        InputStream fileStream = context.getAssets().open(file);
-	  	        prop.load(fileStream);
-	  	        fileStream.close();
-	  	        
-		  	  	prop.setProperty(key, value);
-			  	FileOutputStream out = new FileOutputStream(file);
-			  	prop.store(out, "---No Comment---");
-				  	out.close();
-	  	     } catch (FileNotFoundException e) {
-	  	        Log.d("ERROR", "Ignoring missing property file " + file);
-	  	     }
-	  	  }
-	  	}
 
 	/**
 	 * Format date time string.
@@ -343,45 +291,9 @@ public final class CacheManager
 				+ "" + now.minute + "" + now.second + "";
 	}
 
-	/**
-	 * Inits the setting.
-	 * 
-	 * @param mcontext
-	 *            the mcontext
-	 */
-	static void InitSetting(Context mcontext)
+	public static boolean Init(Context appContext)
 	{
-		Settings.System.putInt(mcontext.getContentResolver(),
-				Settings.System.SCREEN_OFF_TIMEOUT, 60000);
-	}
-	/**
-	 * Lock keygaurd.
-	 * 
-	 * @param appContext
-	 *            the app context
-	 */
-	public static void LockKeygaurd(Context appContext)
-	{
-		KeyguardManager keyguardManager;
-		KeyguardLock lock;
-
-		keyguardManager = (KeyguardManager)
-				appContext.getSystemService(Context.KEYGUARD_SERVICE);
-
-		lock = keyguardManager.newKeyguardLock(Context.KEYGUARD_SERVICE);
-		lock.disableKeyguard();
-	}	
-	/**
-	 * Inits the.
-	 * 
-	 * @param mcontext
-	 *            the mcontext
-	 * @return true, if successful
-	 */
-	public static boolean Init(Context mcontext)
-	{
-		context = mcontext;
-		IsAppOnRunning = true;
+		mContext = appContext;
 		return DeviceVerify();
 	}
 	
@@ -454,7 +366,7 @@ public final class CacheManager
 	{
 		//CopyFiles();
 		String injectKey = getInjectKey();
-		
+
 		String AutoGenInjectKey =	createKey(GetDeviceSerialNo().toUpperCase());
 
 		if(isDevelopment)
@@ -483,7 +395,7 @@ public final class CacheManager
 
 		return str.toUpperCase();
 	}
-	
+
 	private static String createKey(String source)
 	{
 		String hash = Cryptor.CheckSum(source).toUpperCase();
@@ -502,11 +414,11 @@ public final class CacheManager
 
 		return tempArray;
 	}
-	
+
 	private static String getInjectKey()
 	{
 		File path = new File("/data/data/id.zenmorf.com.ppjhandheld/databases/");
-		File file = new File(path, "dbkl.dat");
+		File file = new File(path, "ppj.dat");
 		StringBuilder text = new StringBuilder();
 
 		if (!file.exists())
@@ -517,8 +429,6 @@ public final class CacheManager
 
 		try
 		{
-			// copyDirectory(file, dataKeyPath);
-
 			BufferedReader br = new BufferedReader(new FileReader(file));
 			String line;
 
@@ -545,6 +455,7 @@ public final class CacheManager
 	 */
 	public static void ErrorLog(Exception e)
 	{
+		/*
 		FileHandler fh = null;
 		String name;
 		if (0 == Environment.getExternalStorageState().compareTo(Environment.MEDIA_MOUNTED))
@@ -552,7 +463,7 @@ public final class CacheManager
 		else
 			name = Environment.getDataDirectory().getAbsolutePath();
 
-		name += "/dbkllogfile.log";
+		name += "/logFile.log";
 
 		try
 		{
@@ -578,6 +489,7 @@ public final class CacheManager
 			if (fh != null)
 				fh.close();
 		}
+		*/
 	}
 	
 	public static String GenerateCompoundAmountDescription(String strCompoundAmount)

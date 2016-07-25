@@ -176,7 +176,7 @@ public class DbLocal
 		obj.Open();
 
 		String sqlcommand = "SELECT VMO.DESCRIPTION FROM VEHICLE_MODEL VMO , VEHICLE_MAKE VMA WHERE VMA.CODE=VMO.VEHICLE_MAKE_CODE AND VMA.DESCRIPTION='" + vehicleMake+ "' ORDER BY VMO.DESCRIPTION";
-		Log.e("MESAGE",sqlcommand );
+		Log.e("MESSAGE",sqlcommand );
 		Cursor cur = obj.Query(sqlcommand, null);
 
 		if( (cur != null) && cur.moveToFirst() )
@@ -191,24 +191,32 @@ public class DbLocal
 		obj.Close();
 		return list;
 	}
-	public static Cursor GetListForOffenceSectionSpinner(Context context, String offenceActShortDesc)
-	{		
+
+	public static List<String> GetListForOffenceSectionSpinner(Context context, String offenceActShortDesc)
+	{
+		List<String> list = new ArrayList<String>();
 		DbUtils obj = new DbUtils(context);
 		obj.Open();
 		
 		String sqlcommand = "SELECT OA.CODE, OA.DESCRIPTION, OS.NO, OS.SUBSECTION_NO FROM OFFENCE_ACT OA, OFFENCE_SECTION OS WHERE OA.CODE = OS.OFFENCE_ACT_CODE AND OA.SHORT_DESCRIPTION = \"" + offenceActShortDesc + "\" ORDER BY OS.NO";
-		Log.e("MESAGE",sqlcommand );
+		Log.e("MESSAGE",sqlcommand );
 		Cursor cur = obj.Query(sqlcommand, null);
 
 		if( (cur != null) && cur.moveToFirst() )
-		{			
-			//cur.close();
-        }
+		{
+			cur.moveToFirst();
+			do
+			{
+				list.add(cur.getString(2) + " " +cur.getString(3));
+			} while (cur.moveToNext());
+			cur.close();
+		}
 		obj.Close();
-		return cur;
+		return list;
 	}
-	public static Cursor GetListForOffenceSectionCodeSpinner(Context context, String offenceSectionCode, String offenceActDescription)
-	{		
+	public static List<String> GetListForOffenceSectionCodeSpinner(Context context, String offenceSectionCode, String offenceActDescription)
+	{
+		List<String> list = new ArrayList<String>();
 		String strSectionNo;
         String strSubSectionNo;
         if (offenceSectionCode.contains("("))
@@ -229,11 +237,18 @@ public class DbLocal
 		Cursor cur = obj.Query(sqlcommand, null);
 
 		if( (cur != null) && cur.moveToFirst() )
-		{			
-			//cur.close();
-        }
+		{
+			cur.moveToFirst();
+			do
+			{
+				list.add(cur.getString(0));
+				list.add(cur.getString(1));
+				list.add(cur.getString(2));
+			} while (cur.moveToNext());
+			cur.close();
+		}
 		obj.Close();
-		return cur;
+		return list;
 	}
 	
 	public static float GetCompundAmountFromSection(Context context, String offenceSectionCode, String offenceActCode)

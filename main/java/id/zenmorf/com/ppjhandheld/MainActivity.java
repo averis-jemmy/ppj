@@ -2,6 +2,7 @@ package id.zenmorf.com.ppjhandheld;
 
 import java.lang.reflect.Method;
 
+import android.app.NotificationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -39,6 +40,7 @@ public class MainActivity extends Activity {
 	private EditText txtMACAddress;
 	private CheckBox chkNewPrinter;
 	private String address;
+
 	
 	static Handler timeHandler;
 
@@ -51,10 +53,10 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 		if(CacheManager.Init(getApplicationContext()))
 		{
-			if(SettingsHelper.CheckFile())
-			{
-				SettingsHelper.LoadFile();
-			}
+            String ns = Context.NOTIFICATION_SERVICE;
+            CacheManager.NotificationManagerInstance = (NotificationManager) getSystemService(ns);
+
+			SettingsHelper.LoadFile(CacheManager.mContext);
 			
 			try
 			{
@@ -63,9 +65,11 @@ public class MainActivity extends Activity {
 					CacheManager.mSerialService.stop();
 					Thread.sleep(1000);
 				}
-				CacheManager.mSerialService = new BluetoothSerialService(CacheManager.context, CacheManager.mHandlerBT);
+				CacheManager.mSerialService = new BluetoothSerialService(CacheManager.mContext, CacheManager.mHandlerBT);
 				Thread.sleep(1000);
 				IntentFilter filter = new IntentFilter( "android.bluetooth.device.action.PAIRING_REQUEST");
+				this.registerReceiver(mReceiver, filter);
+				filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
 				this.registerReceiver(mReceiver, filter);
 			}
 			catch(Exception ex)
@@ -87,7 +91,6 @@ public class MainActivity extends Activity {
 		    this.runOnUiThread(run);
 			
 			txtMACAddress=(EditText)findViewById(R.id.etMACAddress);
-			//txtMACAddress.setRawInputType(Configuration.KEYBOARD_QWERTY);
 			txtMACAddress.setEnabled(false);
 			txtMACAddress.addTextChangedListener(new TextWatcher() {
 				@Override
@@ -126,8 +129,9 @@ public class MainActivity extends Activity {
 		     {
 		    	 chkNewPrinter.setChecked(true);
 		    	 txtMACAddress=(EditText)findViewById(R.id.etMACAddress);
-	 			txtMACAddress.setEnabled(true);
-	 			txtMACAddress.setFocusable(true);
+				 txtMACAddress.setBackgroundResource(R.drawable.bordered_textbox);
+	 			 txtMACAddress.setEnabled(true);
+	 			 txtMACAddress.setFocusable(true);
 		     }
 			btn_OK = (Button)findViewById(R.id.buttonOk);
 			btn_OK.setOnClickListener(btnOKListener);
@@ -153,22 +157,39 @@ public class MainActivity extends Activity {
 	private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			if (intent.getAction().equals("android.bluetooth.device.action.PAIRING_REQUEST")) {
-				BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+		if (intent.getAction().equals("android.bluetooth.device.action.PAIRING_REQUEST")) {
+			BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+			try {
+				byte[] pinBytes = (byte[]) BluetoothDevice.class.getMethod("convertPinToBytes", String.class).invoke(BluetoothDevice.class, "1234");
+				Method m = device.getClass().getMethod("setPin", byte[].class);
+				m.invoke(device, pinBytes);
 				try {
-					byte[] pinBytes = (byte[]) BluetoothDevice.class.getMethod("convertPinToBytes", String.class).invoke(BluetoothDevice.class, "1234");
-					Method m = device.getClass().getMethod("setPin", byte[].class);
-					m.invoke(device, pinBytes);
-					try {
-						device.getClass().getMethod("setPairingConfirmation", boolean.class).invoke(device, true);
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+					device.getClass().getMethod("setPairingConfirmation", boolean.class).invoke(device, true);
 				} catch (Exception e) {
+					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
+		}
+		if(intent.getAction().equals(Intent.ACTION_BATTERY_CHANGED)) {
+			boolean isPresent = intent.getBooleanExtra("present", false);
+			int scale = intent.getIntExtra("scale", -1);
+			int rawLevel = intent.getIntExtra("level", -1);
+			int level = 0;
+
+			if(isPresent)
+			{
+				if (rawLevel >= 0 && scale > 0) {
+					level = (rawLevel * 100) / scale;
+				}
+
+				CacheManager.BatteryPercentage = level;
+                EditText etBattery = (EditText) findViewById(R.id.etBattery);
+                etBattery.setText(String.valueOf(CacheManager.BatteryPercentage) + "%");
+			}
+		}
 		}
 	};
 	
@@ -218,14 +239,15 @@ public class MainActivity extends Activity {
 	    		if (isChecked)
 	    		{
 	    			txtMACAddress=(EditText)findViewById(R.id.etMACAddress);
+					txtMACAddress.setBackgroundResource(R.drawable.bordered_textbox);
 	    			txtMACAddress.setEnabled(true);
 	    			txtMACAddress.setFocusable(true);
-	    			
 	    		}
 	    		else
 	    		{
 	    			txtMACAddress=(EditText)findViewById(R.id.etMACAddress);
 	    			txtMACAddress.setText(SettingsHelper.MACAddress);
+					txtMACAddress.setBackgroundResource(R.drawable.bordered_disabled_textbox);
 	    			txtMACAddress.setEnabled(false);
 	    		}
     	  }
@@ -292,9 +314,10 @@ public class MainActivity extends Activity {
     	{
     		if (m_ProgressDialog != null)
 				m_ProgressDialog.dismiss();
-            Intent i = new Intent(this,LoginActivity.class);
+
+            Intent i = new Intent(this, LoginActivity.class);
             startActivity(i);
-			finish();
+			//finish();
     	}
     	else
     	{
@@ -332,7 +355,7 @@ public class MainActivity extends Activity {
 			try
 			{
 				address = txtMACAddress.getText().toString();
-				address = CompileAddress(address);
+				address = CacheManager.CompileAddress(address);
 				// Get the BLuetoothDevice object
 				BluetoothAdapter mBluetoothAdapter = null;
 				mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -353,12 +376,21 @@ public class MainActivity extends Activity {
 			catch(Exception ex)
 			{
 				AlertMessage(this,"ERROR", "FAILED TO CONNECT", 3);
+
+				CacheManager.DisableBluetooth();
+				try {
+					Thread.sleep(3000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
 				return false;
 			}
 
 			if (CacheManager.mSerialService != null && CacheManager.mSerialService.getState() == BluetoothSerialService.STATE_CONNECTED) {
 				SettingsHelper.MACAddress = txtMACAddress.getText().toString();
-				SettingsHelper.SaveFile();
+				SettingsHelper.saveBluetoothAddress(CacheManager.mContext);
 				PrintHandler.TestPrint(SettingsHelper.MACAddress);
 				bStatus = true;
 			}
@@ -366,29 +398,32 @@ public class MainActivity extends Activity {
 			{
 				AlertMessage(this,"ERROR", "FAILED TO CONNECT", 3);
 				bStatus = false;
+
+				CacheManager.DisableBluetooth();
+				try {
+					Thread.sleep(3000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
     	}
     	catch(Exception ex)
     	{
     		AlertMessage(this,"ERROR", "CETAK SAMAN GAGAL", 3);
 			bStatus = false;
+
+			CacheManager.DisableBluetooth();
+			try {
+				Thread.sleep(3000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
     	}
     	
 		return bStatus;
     	
-    }
-    
-    private String CompileAddress(String address)
-    {
-    	String strTemp = "";
-    	for(int i=0;i<address.length();i++)
-    	{
-    		strTemp += address.charAt(i);
-    		if(i%2 == 1 && i != (address.length() - 1))
-    			strTemp += ':';
-    	}
-    	
-    	return strTemp;
     }
     
     protected void onDestroy() {
@@ -402,11 +437,13 @@ public class MainActivity extends Activity {
     
     // display current date
 	public void setCurrentDate() {
-		EditText etDate = (EditText) findViewById(R.id.etDate);
-		etDate.setText(CacheManager.GetDate());
-		EditText etTime = (EditText) findViewById(R.id.etTime);
-		etTime.setText(CacheManager.GetTime().toUpperCase());
+
+		TextView tvDate = (TextView) findViewById(R.id.tvDate);
+		tvDate.setText(CacheManager.GetDate());
+		TextView tvTime = (TextView) findViewById(R.id.tvTime);
+		tvTime.setText(CacheManager.GetTime().toUpperCase());
 	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -428,13 +465,13 @@ public class MainActivity extends Activity {
 	
 	@Override
     protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
         if (Intent.ACTION_MAIN.equals(intent.getAction())) {
-        	
+        	return;
         }
         if (Intent.ACTION_VOICE_COMMAND.equals(intent.getAction())) {
-        	
+        	return;
         }
+        super.onNewIntent(intent);
     }
 
 	@Override
@@ -442,26 +479,19 @@ public class MainActivity extends Activity {
 	{
 		return;
 	}
-	
-	private Window w;
+
 	@Override
-	public void onResume()
-	{
-		w = this.getWindow();
-	    w.addFlags(LayoutParams.FLAG_DISMISS_KEYGUARD);
-	    w.addFlags(LayoutParams.FLAG_SHOW_WHEN_LOCKED);
-	    w.addFlags(LayoutParams.FLAG_TURN_SCREEN_ON);
-	    
-		CacheManager.LockKeygaurd(getApplicationContext());
-		CacheManager.IsAppOnRunning = true;
-		super.onResume();
+	public void onResume() {
+        super.onResume();
 	}
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
 	
 	@Override
-	public void onStart()
-	{
-		CacheManager.LockKeygaurd(getApplicationContext());
-		CacheManager.IsAppOnRunning = true;
+	public void onStart() {
 		super.onStart();
 	}
 	

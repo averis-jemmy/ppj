@@ -30,6 +30,7 @@ class PrinterCommands {
 	public static byte[] CANCEL_PRINT = {0x18};
 
 	public static byte[] PRINT_FEED_LINE = { 0x0A };
+	public static byte[] PRINT = { 0x1B, 0x4A, 0x00 };
 	public static byte[] PRINT_FEED_STANDARD = { 0x0C };
 	public static byte[] PRINT_PAGE_MODE = { 0x1B, 0x0C };
 
@@ -64,6 +65,7 @@ class PrinterCommands {
 	public static byte[] SET_RIGHT_SIDE_SPACING = { 0x1B, 0x20 };
 
 	public static byte[] SELECT_BIT_IMAGE_MODE_COMPLETE = {0x1B, 0x2A, 33, (byte)64, 3};
+
 	public static byte[] SET_LINE_SPACING_24 = {0x1B, 0x33, 24};
 	public static byte[] SET_LINE_SPACING_30 = {0x1B, 0x33, 30};
 }
@@ -152,7 +154,7 @@ public class PrintHandler {
 		Paint p = new Paint();
 
 		p.setColor(Color.BLACK);
-		p.setTextSize(18);
+		p.setTextSize(20.25f);
 		
 		p.setTypeface(Typeface.DEFAULT_BOLD);
 		
@@ -200,7 +202,7 @@ public class PrintHandler {
 		InputStream stBmp = null;
 		
 		try {
-			stBmp = CacheManager.context.getAssets().open(imgFileName);
+			stBmp = CacheManager.mContext.getAssets().open(imgFileName);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -210,7 +212,7 @@ public class PrintHandler {
 		
 		PosY += IncY;
 		
-		float xPos = (float) PosX * 200;
+		float xPos = (float)PosX * 200;
 		float yPos = (float)PosY * 200;
 		
 		c.drawBitmap(temp, xPos, yPos, p);
@@ -220,7 +222,7 @@ public class PrintHandler {
 	private static void PrintBarCode(double PosX, double IncY, String strBarCode) {
 		Paint p = new Paint();
 
-		AssetManager assetManager = CacheManager.context.getAssets();
+		AssetManager assetManager = CacheManager.mContext.getAssets();
 		
 		Typeface font = Typeface.createFromAsset(assetManager, "Barcode39.otf");
 		p.setTypeface(font);
@@ -229,7 +231,7 @@ public class PrintHandler {
 		
 		PosY += IncY;
 		
-		float xPos = (float) PosX * 200;
+		float xPos = (float)PosX * 200;
 		float yPos = (float)PosY * 200;
 		
 		c.drawText("*" + strBarCode + "*", xPos, yPos, p);
@@ -295,7 +297,6 @@ public class PrintHandler {
 	
 	private static void PrintImage(Bitmap bmp)
 	{
-		//saveBitmap(bmp);
 		int width = bmp.getWidth();
 		int height = bmp.getHeight();
 
@@ -309,28 +310,49 @@ public class PrintHandler {
 
 		byte[] bitArray = ConvertBitArray(pixels, width, height);
 
-		for (int r = 0; r < height / pH; r++)
-		{
-			byte[] send= new byte[pL + 5];
-            send[0] = PrinterCommands.DEFINE_USER_BIT_IMAGE[0];
-            send[1] = PrinterCommands.DEFINE_USER_BIT_IMAGE[1];
-            send[2] = PrinterCommands.DEFINE_USER_BIT_IMAGE[2];
-            send[3] = pW;
-            send[4] = (byte)height;
-			System.arraycopy(bitArray, r * pL, send, 5, pL);
+		/*
+		BitSet dots = convertArgbToGrayscale(bmp, width, height);
 
-			printData.add(send);
-			//CacheManager.mSerialService.write(send);
-		}
-
-		for (byte[] data : printData) {
-			CacheManager.mSerialService.write(data);
+		CacheManager.mSerialService.write(PrinterCommands.SET_LINE_SPACING_24);
+		int offset = 0;
+		while (offset < bmp.getHeight()) {
+			CacheManager.mSerialService.write(PrinterCommands.SELECT_BIT_IMAGE_MODE_COMPLETE);
+			for (int x = 0; x < bmp.getWidth(); ++x) {
+				for (int k = 0; k < 3; ++k) {
+					byte slice = 0;
+					for (int b = 0; b < 8; ++b) {
+						int y = (((offset / 8) + k) * 8) + b;
+						int i = (y * bmp.getWidth()) + x;
+						boolean v = false;
+						if (i < dots.length()) {
+							v = dots.get(i);
+						}
+						slice |= (byte) ((v ? 1 : 0) << (7 - b));
+					}
+					CacheManager.mSerialService.write(new byte[] { slice });
+				}
+			}
+			offset += 24;
 		}
 
 		CacheManager.mSerialService.write(PrinterCommands.PRINT_FEED_LINE);
-        CacheManager.mSerialService.write(PrinterCommands.PRINT_FEED_LINE);
-        CacheManager.mSerialService.write(PrinterCommands.PRINT_FEED_LINE);
-        CacheManager.mSerialService.write(PrinterCommands.PRINT_FEED_LINE);
+		CacheManager.mSerialService.write(PrinterCommands.SET_LINE_SPACING_30);
+		*/
+
+		for (int r = 0; r < height / pH; r++)
+		{
+			byte[] send= new byte[pL+5];
+			send[0]=0x1b;
+			send[1]=0x58;
+			send[2]=0x34;
+			send[3]=pW;
+			send[4]=100;
+			System.arraycopy(bitArray, r * pL, send, 5, pL);
+
+			CacheManager.mSerialService.write(send);
+		}
+
+		CacheManager.mSerialService.write(PrinterCommands.PRINT_FEED_LINE);
 	}
 
 	private static BitSet convertArgbToGrayscale(Bitmap bmpOriginal, int width,
@@ -367,8 +389,7 @@ public class PrintHandler {
 
 	private static void saveBitmap(Bitmap bmp) {
 		try {
-			String file_path = Environment.getExternalStorageDirectory() +
-					"/CustomDir";
+			String file_path = "/mnt/sdcard/CustomDir";
 			File dir = new File(file_path);
 			if(!dir.exists())
 				dir.mkdirs();
@@ -385,25 +406,28 @@ public class PrintHandler {
 	}
 	
 	public static void PrintTraffic(PPJSummonIssuanceInfo notice){
-		
+
+		int xlSize = 12;
+		int lSize = 10;
+		int mSize = 9;
+		int sSize = 8;
+
 		InitPrinterTraffic();
 		
 		PrintImage("logo.bmp", 0.8, 0, 0, 0, false);
 		
-        PrintText(1.2, 0.15, "Arial", 10, true, "PERBADANAN PUTRAJAYA", -1);
-        
-        PrintText(1.2, 0.15, "Arial", 8, true, "", -1);
-        PrintText(1.2, 0.15, "Arial", 8, false, "UNIT", -1);
-		PrintText(2.6, 0, "Arial", 8, false, "No.", -1);
-        PrintText(1.45, 0, "Arial", 8, true, " : " + notice.OfficerZone, -1);
-        PrintText(3.0, 0, "Arial", 8, true, " : " + notice.NoticeSerialNo, -1);
-        PrintBarCode(1.7, 0.35, notice.NoticeSerialNo);
-        PrintText(0.95, 0.15, "Arial", 9, true, "NOTIS KESALAHAN SERTA TAWARAN KOMPAUN", -1);
-        PrintText(0.1, 0.3, "Arial", 8, false, "NO. KENDERAAN", -1);
-		PrintText(2.1, 0, "Arial", 8, false, "NO. CUKAI JALAN", -1);
-        PrintText(0.95, 0, "Arial", 8, true, " : " + notice.VehicleNo, 20);
-        PrintText(2.95, 0, "Arial", 8, true, " : " + notice.RoadTaxNo, 15);
-        PrintText(0.1, 0.15, "Arial", 8, false, "JENAMA / MODEL", -1);
+        PrintText(1.2, 0.15, "Arial", xlSize, true, "PERBADANAN PUTRAJAYA", -1);
+
+		PrintText(3.1, 0.15, "Arial", mSize, false, "No. :", -1, true);
+        PrintText(4, 0, "Arial", mSize, true, notice.NoticeSerialNo, -1, true);
+		PrintText(0, 0.1, "Arial", sSize, false, "", -1);
+        PrintBarCode(1.7, 0.4, notice.NoticeSerialNo);
+        PrintText(0.95, 0.15, "Arial", lSize, true, "NOTIS KESALAHAN SERTA TAWARAN KOMPAUN", -1);
+        PrintText(0.1, 0.3, "Arial", mSize, false, "NO. KENDERAAN", -1);
+		PrintText(2.1, 0, "Arial", mSize, false, "NO. CUKAI JALAN", -1);
+        PrintText(0.95, 0, "Arial", mSize, true, " : " + notice.VehicleNo, 20);
+        PrintText(2.95, 0, "Arial", mSize, true, " : " + notice.RoadTaxNo, 15);
+        PrintText(0.1, 0.15, "Arial", mSize, false, "JENAMA / MODEL", -1);
         String makeModel = "";
         if(notice.VehicleMake.length() != 0)
         	makeModel += notice.VehicleMake;
@@ -414,113 +438,112 @@ public class PrintHandler {
         	makeModel += " " + notice.VehicleModel;
         else
         	makeModel += " " + notice.SelectedVehicleModel;
-        PrintText(0.95, 0, "Arial", 8, true, " : " + makeModel, -1);
-        PrintText(0.1, 0.15, "Arial", 8, false, "JENIS BADAN", -1);
-        PrintText(0.95, 0, "Arial", 8, true, " : " + notice.VehicleType, -1);
-        PrintText(0.1, 0.15, "Arial", 8, false, "TEMPAT / JALAN", -1);
+        PrintText(0.95, 0, "Arial", mSize, true, " : " + makeModel, -1);
+        PrintText(0.1, 0.15, "Arial", mSize, false, "JENIS BADAN", -1);
+        PrintText(0.95, 0, "Arial", mSize, true, " : " + notice.VehicleType, -1);
+        PrintText(0.1, 0.15, "Arial", mSize, false, "TEMPAT / JALAN", -1);
         if(notice.OffenceLocationArea.length() != 0)
         {
-        	PrintText(0.95, 0, "Arial", 8, true, " : " + notice.OffenceLocationArea, -1);
+        	PrintText(0.95, 0, "Arial", mSize, true, " : " + notice.OffenceLocationArea, -1);
         }
         else
         {
-        	PrintText(0.95, 0, "Arial", 8, true, " : " + notice.SummonLocation, -1);
+        	PrintText(0.95, 0, "Arial", mSize, true, " : " + notice.SummonLocation, -1);
         }
         if(notice.OffenceLocationDetails.length() > 0)
-        	PrintText(0.95, 0.15, "Arial", 8, true, " : " + notice.OffenceLocationDetails, -1);
+        	PrintText(0.95, 0.15, "Arial", mSize, true, " : " + notice.OffenceLocationDetails, -1);
         else
-        	PrintText(0.95, 0.15, "Arial", 8, true, " : " + "-", -1);
+        	PrintText(0.95, 0.15, "Arial", mSize, true, " : " + "-", -1);
         
-        PrintText(0.1, 0.15, "Arial", 8, false, "NO. PETAK/TIANG", -1);
+        PrintText(0.1, 0.15, "Arial", mSize, false, "NO. PETAK/TIANG", -1);
         if(notice.PostNo.length() > 0)
-        	PrintText(0.95, 0, "Arial", 8, true, " : " + notice.PostNo, -1);
+        	PrintText(0.95, 0, "Arial", mSize, true, " : " + notice.PostNo, -1);
         else
-        	PrintText(0.95, 0, "Arial", 8, true, " : " + "-", -1);
+        	PrintText(0.95, 0, "Arial", mSize, true, " : " + "-", -1);
         
-        PrintText(0.1, 0.15, "Arial", 8, false, "TARIKH", -1);
-		PrintText(2.1, 0, "Arial", 8, false, "WAKTU", -1);
-		PrintText(0.95, 0, "Arial", 8, true, " : " + CacheManager.GetDateString(notice.OffenceDateTime), -1);
-        PrintText(2.95, 0, "Arial", 8, true, " : " + CacheManager.GetTimeString(notice.OffenceDateTime), -1);
+        PrintText(0.1, 0.15, "Arial", mSize, false, "TARIKH", -1);
+		PrintText(2.1, 0, "Arial", mSize, false, "WAKTU", -1);
+		PrintText(0.95, 0, "Arial", mSize, true, " : " + CacheManager.GetDateString(notice.OffenceDateTime), -1);
+        PrintText(2.95, 0, "Arial", mSize, true, " : " + CacheManager.GetTimeString(notice.OffenceDateTime), -1);
         PrintTextFlow("KEPADA PEMUNYA / PEMANDU KENDERAAN TERSEBUT DI ATAS, TUAN / PUAN DI DAPATI TELAH MELAKUKAN KESALAHAN SEPERTI BERIKUT :", 0.1, 0.3);
-        PrintText(0.1, 0.3, "Arial", 8, true, "PERUNTUKAN UNDANG-UNDANG:", -1);
+        PrintText(0.1, 0.3, "Arial", mSize, true, "PERUNTUKAN UNDANG-UNDANG:", -1);
         PrintTextFlow(notice.OffenceAct, 0.3, 0.15);
-        PrintText(0.1, 0.3, "Arial", 8, true, "SEKSYEN / KAEDAH :", -1);
+        PrintText(0.1, 0.3, "Arial", mSize, true, "SEKSYEN / KAEDAH :", -1);
         PrintTextFlow(notice.OffenceSection, 0.3, 0.15);
-        PrintText(0.1, 0.15, "Arial", 8, true, "KESALAHAN :", -1);
+        PrintText(0.1, 0.15, "Arial", mSize, true, "KESALAHAN :", -1);
         PrintTextFlow(notice.Offence, 0.3, 0.15);
-        PrintText(0.1, 0.4, "Arial", 8, true, "BUTIR-BUTIR :", -1);
+        PrintText(0.1, 0.4, "Arial", mSize, true, "BUTIR-BUTIR :", -1);
         if(notice.OffenceDetails.length()>0)
         	PrintTextFlow(notice.OffenceDetails, 0.3, 0.15);
         else
         	PrintTextFlow("-", 0.3, 0.15);
         
-        PrintText(0.1, 0.3, "Arial", 8, false, "DIKELUARKAN OLEH :", -1);
-        PrintText(1.1, 0, "Arial", 8, true, CacheManager.officerDetails, -1);
-        PrintText(1.0, 0.1, "Arial", 8, false, "PENGUATKUASA/WARDEN LALULINTAS", -1);
-        PrintText(3.0, 0, "Arial", 8, false, "TARIKH :", -1);
-        PrintText(3.5, 0, "Arial", 8, true, CacheManager.GetDateString(notice.OffenceDateTime), -1);
-        PrintText(0.1, 0.1, "Arial", 8, false, "_______________________________________________________________________________________________________________________________", -1);
-        PrintText(0.1, 0.2, "Arial", 8, true, "TAWARAN KOMPAUN", -1);
-        PrintTextFlow("SAYA BERSEDIA MENGKOMPAUN KESALAHAN SEPERTI YANG DITETAPKAN DALAM MASA 14 HARI (TARIKH TAMAT : "+ CacheManager.GetOtherDateString(notice.CompoundDate) +") DARI TARIKH NOTIS DICETAK. KEGAGALAN MENJELASKAN BAYARAN KOMPAUN AKAN MENYEBABKAN TINDAKAN MAHKAMAH AKAN DIAMBIL.", 0.1, 0.2);
-        PrintImage("signature.bmp", 0.2, 0.3, 0, 0, false);
+        PrintText(0.1, 0.3, "Arial", mSize, false, "DIKELUARKAN OLEH :", -1);
+        PrintText(1.1, 0, "Arial", mSize, true, CacheManager.officerDetails, -1);
+        PrintText(1.0, 0.1, "Arial", mSize, false, "PENGUATKUASA/WARDEN LALULINTAS", -1);
+        PrintText(3.0, 0, "Arial", mSize, false, "TARIKH :", -1);
+        PrintText(3.5, 0, "Arial", mSize, true, CacheManager.GetDateString(notice.OffenceDateTime), -1);
+        PrintText(0.1, 0.1, "Arial", mSize, false, "_______________________________________________________________________________________________________________________________", -1);
+        PrintText(0.1, 0.2, "Arial", mSize, true, "TAWARAN KOMPAUN", -1);
+        PrintTextFlow("SAYA BERSEDIA MENGKOMPAUN KESALAHAN SEPERTI YANG DITETAPKAN DALAM MASA 14 HARI (TARIKH TAMAT : " + CacheManager.GetOtherDateString(notice.CompoundDate) + ") DARI TARIKH NOTIS DICETAK. KEGAGALAN MENJELASKAN BAYARAN KOMPAUN AKAN MENYEBABKAN TINDAKAN MAHKAMAH AKAN DIAMBIL.", 0.1, 0.2);
+        PrintImage("signature.bmp", 0.2, 0.4, 0, 0, false);
         
-        PrintText(2.7, 0.1, "Arial", 8, true, "KADAR BAYARAN", -1);
+        PrintText(2.7, 0.1, "Arial", mSize, true, "KADAR BAYARAN", -1);
         if (notice.CompoundAmountDesc1 != null && notice.CompoundAmountDesc1.length() != 0)
         {
-            PrintText(2.5, 0.1, "Arial", 8, true, notice.CompoundAmountDesc1, -1);
-            PrintText(3.2, 0, "Arial", 8, true, "RM " + String.valueOf(notice.CompoundAmount1), -1);
+            PrintText(2.5, 0.1, "Arial", mSize, true, notice.CompoundAmountDesc1, -1);
+            PrintText(3.2, 0, "Arial", mSize, true, "RM " + String.valueOf(notice.CompoundAmount1), -1);
             if (notice.CompoundAmountDesc2 != null && notice.CompoundAmountDesc2.length() != 0)
             {
-                PrintText(2.5, 0.1, "Arial", 8, true, notice.CompoundAmountDesc2, -1);
-                PrintText(3.2, 0, "Arial", 8, true, "RM " + String.valueOf(notice.CompoundAmount2), -1);
-                PrintText(0, -0.1, "Arial", 8, true, "", -1);
+                PrintText(2.5, 0.1, "Arial", mSize, true, notice.CompoundAmountDesc2, -1);
+                PrintText(3.2, 0, "Arial", mSize, true, "RM " + String.valueOf(notice.CompoundAmount2), -1);
+                PrintText(0, -0.1, "Arial", mSize, true, "", -1);
             }
             if (notice.CompoundAmountDesc3 != null && notice.CompoundAmountDesc3.length() != 0)
             {
-                PrintText(2.5, 0.2, "Arial", 8, true, notice.CompoundAmountDesc3, -1);
-                PrintText(3.2, 0, "Arial", 8, true, "RM " + String.valueOf(notice.CompoundAmount3), -1);
-                PrintText(0, -0.2, "Arial", 8, true, "", -1);
+                PrintText(2.5, 0.2, "Arial", mSize, true, notice.CompoundAmountDesc3, -1);
+                PrintText(3.2, 0, "Arial", mSize, true, "RM " + String.valueOf(notice.CompoundAmount3), -1);
+                PrintText(0, -0.2, "Arial", mSize, true, "", -1);
             }
             if (notice.CompoundAmountDesc4 != null && notice.CompoundAmountDesc4.length() != 0)
             {
-                PrintText(2.5, 0.3, "Arial", 8, true, notice.CompoundAmountDesc4, -1);
-                PrintText(3.2, 0, "Arial", 8, true, "RM " + String.valueOf(notice.CompoundAmount4), -1);
-                PrintText(0, -0.3, "Arial", 8, true, "", -1);
+                PrintText(2.5, 0.3, "Arial", mSize, true, notice.CompoundAmountDesc4, -1);
+                PrintText(3.2, 0, "Arial", mSize, true, "RM " + String.valueOf(notice.CompoundAmount4), -1);
+                PrintText(0, -0.3, "Arial", mSize, true, "", -1);
             }
             if (notice.CompoundAmountDesc5 != null && notice.CompoundAmountDesc5.length() != 0)
             {
-                PrintText(2.5, 0.4, "Arial", 8, true, notice.CompoundAmountDesc5, -1);
-                PrintText(3.2, 0, "Arial", 8, true, "RM " + String.valueOf(notice.CompoundAmount5), -1);
-                PrintText(0, -0.4, "Arial", 8, true, "", -1);
+                PrintText(2.5, 0.4, "Arial", mSize, true, notice.CompoundAmountDesc5, -1);
+                PrintText(3.2, 0, "Arial", mSize, true, "RM " + String.valueOf(notice.CompoundAmount5), -1);
+                PrintText(0, -0.4, "Arial", mSize, true, "", -1);
             }
         }
         else
         {
-            PrintText(2.9, 0.1, "Arial", 8, true, "RM " + String.valueOf(notice.CompoundAmount1), -1);
+            PrintText(2.9, 0.1, "Arial", mSize, true, "RM " + String.valueOf(notice.CompoundAmount1), -1);
         }
         
-        PrintText(0.2, 0.3, "Arial", 8, false, "...............................................................", -1);
-        PrintText(0.3, 0.1, "Arial", 8, false, "(ROHAYAH BINTI KARIM)", -1);
-        PrintText(0.2, 0.1, "Arial", 8, false, "JABATAN HAL EHWAL UNDANG-UNDANG", -1);
-        PrintText(0.25, 0.1, "Arial", 8, false, "b.p. DATUK BANDAR KUALA LUMPUR", -1);
-        PrintText(0.1, 0.3, "Arial", 8, false, "-------------------------------------------------------------------------------------------------------------------------------", -1);
-        PrintImage("logo.bmp", 0.3, 0.15, 0, 0, false);
-        PrintText(0.7, 0, "Arial", 8, true, "PERBADANAN PUTRAJAYA", -1);
-        PrintText(0.7, 0.1, "Arial", 8, false, "", -1);
-        PrintText(0.7, 0.2, "Arial", 7, false, "NO. KEND.", -1);
-        PrintText(1.55, 0, "Arial", 7, true, " : " + notice.VehicleNo, -1);
-        PrintText(0.7, 0.1, "Arial", 7, false, "PERUNTUKAN", -1);
-        PrintText(1.55, 0, "Arial", 7, true, " : " + notice.OffenceAct, 50);
-        PrintText(0.7, 0.1, "Arial", 7, false, "SEKSYEN/KAEDAH", -1);
-        PrintText(1.55, 0, "Arial", 7, true, " : " + notice.OffenceSection, -1);
-        PrintText(0.7, 0.1, "Arial", 7, false, "TARIKH", -1);
-        PrintText(1.55, 0, "Arial", 7, true, " : " + CacheManager.GetDateString(notice.OffenceDateTime), -1);
+        PrintText(0.2, 0.2, "Arial", mSize, false, "...............................................................", -1);
+        PrintText(0.3, 0.1, "Arial", mSize, false, "(ROHAYAH BINTI KARIM)", -1);
+        PrintText(0.2, 0.1, "Arial", mSize, false, "JABATAN HAL EHWAL UNDANG-UNDANG", -1);
+        PrintText(0.25, 0.1, "Arial", mSize, false, "b.p. DATUK BANDAR KUALA LUMPUR", -1);
+        PrintText(0.1, 0.3, "Arial", mSize, false, "-------------------------------------------------------------------------------------------------------------------------------", -1);
+        PrintImage("logo.bmp", 0.3, 0.05, 0, 0, false);
+        PrintText(0.7, 0.1, "Arial", mSize, true, "PERBADANAN PUTRAJAYA", -1);
+        PrintText(0.7, 0.2, "Arial", sSize, false, "NO. KEND.", -1);
+        PrintText(1.55, 0, "Arial", sSize, true, " : " + notice.VehicleNo, -1);
+        PrintText(0.7, 0.1, "Arial", sSize, false, "PERUNTUKAN", -1);
+        PrintText(1.55, 0, "Arial", sSize, true, " : " + notice.OffenceAct, 50);
+        PrintText(0.7, 0.1, "Arial", sSize, false, "SEKSYEN/KAEDAH", -1);
+        PrintText(1.55, 0, "Arial", sSize, true, " : " + notice.OffenceSection, -1);
+        PrintText(0.7, 0.1, "Arial", sSize, false, "TARIKH", -1);
+        PrintText(1.55, 0, "Arial", sSize, true, " : " + CacheManager.GetDateString(notice.OffenceDateTime), -1);
         PrintRect(0.1, 0.2, 4.0, 0.4);
         PrintTextFlow(notice.Advertisement, 0.15, -0.3);
-        PrintText(2.7, 0.4, "Arial", 7, true, "KERATAN UNTUK CATATAN PEMBAYARAN", -1, true);
-        PrintText(2.2, 0.1, "Arial", 7, false, "TERIMA KASIH", -1, true);
-        PrintText(3.1, 0.1, "Arial", 7, false, "No. :", -1, true);
-        PrintText(4.0, 0, "Arial", 8, true, notice.NoticeSerialNo, -1, true);
+        PrintText(2.7, 0.4, "Arial", sSize, true, "KERATAN UNTUK CATATAN PEMBAYARAN", -1, true);
+        PrintText(2.2, 0.1, "Arial", sSize, false, "TERIMA KASIH", -1, true);
+        PrintText(3.1, 0.1, "Arial", sSize, false, "No. :", -1, true);
+        PrintText(4.0, 0, "Arial", mSize, true, notice.NoticeSerialNo, -1, true);
 		
 		Bitmap bmp = DrawBmp();
 		

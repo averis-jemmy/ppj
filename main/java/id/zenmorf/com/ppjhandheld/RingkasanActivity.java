@@ -2,19 +2,13 @@ package id.zenmorf.com.ppjhandheld;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import org.xmlpull.v1.XmlSerializer;
 
-import android.net.Uri;
 import android.os.BatteryManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -31,9 +25,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.text.format.DateFormat;
 import android.util.Xml;
 import android.view.KeyEvent;
@@ -239,8 +230,7 @@ public class RingkasanActivity extends Activity {
 			if(CheckPrint())
 			{
 				PrintHandler.PrintTraffic(CacheManager.SummonIssuanceInfo);
-				GenerateXmlNotice(CacheManager.SummonIssuanceInfo);
-				SettingsHelper.IncrementSerialNumber();
+				//GenerateXmlNotice(CacheManager.SummonIssuanceInfo);
 				
 				AlertMessage(RingkasanActivity.this, "CETAK", "Cetak Salinan Kedua?", 2);
 				
@@ -561,7 +551,7 @@ public class RingkasanActivity extends Activity {
 	        serializer.setOutput(data);
 	        serializer.startDocument(null, null);
 	        serializer.startTag(null, "ns0:Notice");
-	        serializer.attribute(null, "xmlns:ns0",  "http://DBKL.MobileEnforcement.Notices.LoadOffenceNotice");
+	        serializer.attribute(null, "xmlns:ns0",  "http://PPJ.MobileEnforcement.Notices.LoadOffenceNotice");
 	        serializer.startTag(null, "No");
 	        serializer.text(summons.NoticeSerialNo);
 	        serializer.endTag(null, "No");
@@ -571,9 +561,9 @@ public class RingkasanActivity extends Activity {
 	        serializer.startTag(null, "OfficerID");
 	        serializer.text(CacheManager.UserId);
 	        serializer.endTag(null,"OfficerID");
-	        serializer.startTag(null, "OfficerZone");
-	        serializer.text(summons.OfficerZone);
-	        serializer.endTag(null,"OfficerZone");
+	        //serializer.startTag(null, "OfficerZone");
+	        //serializer.text(summons.OfficerZone);
+	        //serializer.endTag(null,"OfficerZone");
 	        
 	        //Vehicle
 	        serializer.startTag(null, "Vehicle");
@@ -674,79 +664,6 @@ public class RingkasanActivity extends Activity {
 	            MediaStore.Images.Media.DATA,
 	            MediaStore.Images.Media.DISPLAY_NAME
 	    };
-
-        try
-        {
-		    // Get the base URI for the People table in the Contacts content provider.
-		    Uri images = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-	
-		    // Make the query.
-		    Cursor cur = managedQuery(images,
-		            projection, // Which columns to return
-		            "",         // Which rows to return (all rows)
-		            null,       // Selection arguments (none)
-		            ""          // Ordering
-		            );
-	
-			List<String> list = new ArrayList<String>();
-	
-			if (cur != null)
-			{
-			    if (cur.moveToFirst()) {
-			        int nameColumn = cur.getColumnIndex(
-			            MediaStore.Images.Media.DATA);
-			        do {
-			        	list.add(cur.getString(nameColumn));
-			        } while (cur.moveToNext());
-			    }
-			}
-			
-			if(list.size() > 0)
-			{
-				for (int i = 0; i< list.size(); i++)
-				{
-					//File image = new File(list.get(i));
-		    		//File newImage = new File("/mnt/sdcard/OfflineSummons/" + summons.NoticeSerialNo + "Photo" + String.valueOf(i) + ".xml");
-		    		//image.renameTo(newImage);
-		    		Bitmap image = decodeFile(list.get(i));
-		    		File newImage = new File("/mnt/sdcard/OfflineSummons/" + summons.NoticeSerialNo + "Photo" + String.valueOf(i) + ".xml");
-		    		try {
-		    		       FileOutputStream output = new FileOutputStream(newImage);
-		    		       image.compress(Bitmap.CompressFormat.JPEG, 90, output);
-		    		       output.close();
-		    		} catch (Exception e) {
-		    		       e.printStackTrace();
-		    		}
-				}
-			}
-        }
-        catch(Exception ex)
-        {
-        	
-        }
-	}
-	
-	private Bitmap decodeFile(String path){
-	    try {
-	        //Decode image size
-	        BitmapFactory.Options o = new BitmapFactory.Options();
-	        o.inJustDecodeBounds = true;
-	        BitmapFactory.decodeStream(new FileInputStream(path),null,o);
-
-	        //The new size we want to scale to
-	        final int REQUIRED_SIZE=120;
-
-	        //Find the correct scale value. It should be the power of 2.
-	        int scale=1;
-	        while(o.outWidth/scale/2>=REQUIRED_SIZE && o.outHeight/scale/2>=REQUIRED_SIZE)
-	            scale*=2;
-
-	        //Decode with inSampleSize
-	        BitmapFactory.Options o2 = new BitmapFactory.Options();
-	        o2.inSampleSize=scale;
-	        return BitmapFactory.decodeStream(new FileInputStream(path), null, o2);
-	    } catch (FileNotFoundException e) {}
-	    return null;
 	}
 	
 	@Override
@@ -754,10 +671,11 @@ public class RingkasanActivity extends Activity {
 	{
 		return;
 	}
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.activity_ringkasan, menu);
+		getMenuInflater().inflate(R.menu.menu_main, menu);
 		return true;
 	}
 	
@@ -773,32 +691,24 @@ public class RingkasanActivity extends Activity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
-	private Window w;
+
 	@Override
 	public void onResume()
-	{		
-		w = this.getWindow();
-	    w.addFlags(LayoutParams.FLAG_DISMISS_KEYGUARD);
-	    w.addFlags(LayoutParams.FLAG_SHOW_WHEN_LOCKED);
-	    w.addFlags(LayoutParams.FLAG_TURN_SCREEN_ON);
-	    
+	{
 		FillData();
-		CacheManager.LockKeygaurd(getApplicationContext());
-		CacheManager.IsAppOnRunning = true;
 		super.onResume();
 	}
+
 	@Override
 	protected void onDestroy()
 	{
 		unregisterReceiver(battery_receiver);
 		super.onDestroy();
 	}
+
 	@Override
 	protected void onStart()
 	{
-		CacheManager.LockKeygaurd(getApplicationContext());
-		CacheManager.IsAppOnRunning = true;
 		FillData();
 		//SaveData();
 			

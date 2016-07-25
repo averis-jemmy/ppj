@@ -90,9 +90,9 @@ public class MaklumatActivity extends Activity {
 		public void onClick(View v)
 		{
 			SaveData();
-			Intent i = new Intent(MaklumatActivity.this, ImageActivity.class);
-			startActivity(i);
-			finish();
+			//Intent i = new Intent(MaklumatActivity.this, ImageActivity.class);
+			//startActivity(i);
+			//finish();
 			}
 
 		};
@@ -296,8 +296,6 @@ public class MaklumatActivity extends Activity {
 	@Override
 	public void onStart()
 	{
-		CacheManager.LockKeygaurd(getApplicationContext());
-		CacheManager.IsAppOnRunning = true;
 		if(!CacheManager.IsClearData)
 		{
 			FillData();
@@ -322,22 +320,9 @@ public class MaklumatActivity extends Activity {
 		//return;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see android.app.Activity#onStart()
-	 */
-	private Window w;
 	@Override
 	public void onResume()
 	{
-		w = this.getWindow();
-	    w.addFlags(LayoutParams.FLAG_DISMISS_KEYGUARD);
-	    w.addFlags(LayoutParams.FLAG_SHOW_WHEN_LOCKED);
-	    w.addFlags(LayoutParams.FLAG_TURN_SCREEN_ON);
-	    
-		CacheManager.LockKeygaurd(getApplicationContext());
-		CacheManager.IsAppOnRunning = true;
 		super.onResume();
 	}
 	

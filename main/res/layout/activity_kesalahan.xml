@@ -136,7 +136,53 @@
             android:scrollbars="vertical"
             android:background="@drawable/textbox" >
 
-        </EditText>
+        </EditText>  
+        <TextView
+            android:id="@+id/tvCompoundDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tarikh Tamat Kompaun:"
+        	android:textColor="@color/red_base"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+        <FrameLayout
+            android:id="@+id/layCompoundDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"            
+            android:background="@drawable/mygrey_border">
+        <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+    	<tcubes.dbkl.summons.DBKLDatePickerField
+    	    android:id="@+id/dtpCompoundDate"
+             style="@style/text_normal"       
+             android:layout_width="278dp"      
+             android:textSize="20dp"
+              />    	
+        </LinearLayout>
+        </FrameLayout>
+        <TextView
+            android:id="@+id/tvCourtDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tarikh Mahkamah:"
+        	android:textColor="@color/red_base"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+        <FrameLayout
+            android:id="@+id/layCourtDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"            
+            android:background="@drawable/mygrey_border">
+        <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+        <tcubes.dbkl.summons.DBKLDatePickerField
+    	    android:id="@+id/dtpCourtDate"
+             style="@style/text_normal"       
+             android:layout_width="278dp"      
+             android:textSize="20dp"
+              />    	
+        </LinearLayout>  
+        </FrameLayout>
          <TextView
             android:id="@+id/tvNoPetakTiang"
             android:layout_width="wrap_content"
@@ -170,4 +216,7 @@
        </RelativeLayout>
 </LinearLayout>
     </ScrollView>
+
+    
+
 </LinearLayout>

@@ -14,6 +14,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+         <TextView
+            android:id="@+id/tvSummaryJenisNotice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Jenis Notice:"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <EditText
+            android:id="@+id/etSummaryJenisNotice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/textbox"
+            android:ems="10" 
+            android:enabled="false"/>  
              <TextView
             android:id="@+id/tvSummaryNoKenderaan"
             android:layout_width="wrap_content"

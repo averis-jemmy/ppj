@@ -1,142 +1,153 @@
-<!-- <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity" > -->
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:orientation="vertical" >
+    android:paddingTop="20dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:orientation="vertical" >
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"            
-            android:background="@drawable/my_border">
-       <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical" >
+    <LinearLayout
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="5dp" >
 
         <TextView
-            android:id="@+id/tvTarikh"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"            
-            android:text="@string/Tarikh"
+            android:id="@+id/tvBatteryLabel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".20"
+            android:text="Bateri"
             android:textStyle="bold" />
 
+        <EditText
+            android:id="@+id/etBattery"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".80"
+            android:padding="5dp"
+            android:background="@drawable/bordered_disabled_textbox"
+            android:textSize="20dp"
+            android:editable="false"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="5dp" >
         <TextView
+            android:id="@+id/tvDateLabel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".20"
+            android:text="Tarikh"
+            android:textStyle="bold" />
+
+        <EditText
             android:id="@+id/tvDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" 
-            android:textSize="30dp"
-            android:textStyle="bold"
-             />
-        </LinearLayout>
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".80"
+            android:padding="5dp"
+            android:background="@drawable/bordered_disabled_textbox"
+            android:textSize="20dp"
+            android:editable="false"
+            android:textStyle="bold" />
+    </LinearLayout>
 
-        </FrameLayout>
-       <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"            
-            android:background="@drawable/my_border">
- 		<LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical" >
+    <LinearLayout
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="5dp" >
+
         <TextView
-            android:id="@+id/tvMasa"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"            
-            android:text="@string/Masa"
+            android:id="@+id/tvTimeLabel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".20"
+            android:text="Masa"
             android:textStyle="bold" />
 
-        <TextView
+        <EditText
             android:id="@+id/tvTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" 
-            android:textSize="30dp"
-            android:textStyle="bold"
-             />
-        </LinearLayout>
-        </FrameLayout>
-         
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".80"
+            android:padding="5dp"
+            android:background="@drawable/bordered_disabled_textbox"
+            android:textSize="20dp"
+            android:editable="false"
+            android:textStyle="bold" />
+    </LinearLayout>
 
-<FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"            
-            android:background="@drawable/my_border">
-       
- <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical" >
+    <LinearLayout
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="5dp" >
         <CheckBox
             android:id="@+id/cbPrinter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="false"
-            android:text="@string/NewPrinter" />
-     
+            android:text="Pencetak Baru" />
+
         <TextView
             android:id="@+id/tvlblMACAddress"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/MacAddress"
+            android:text="MAC Address"
             android:textStyle="bold" />
 
         <EditText
             android:id="@+id/etMACAddress"
             android:layout_width="match_parent"
-            android:layout_height="36dp"
-            android:layout_margin="3dp"
-            android:background="@drawable/textbox"
-            android:ems="10"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@drawable/bordered_disabled_textbox"
             android:maxLength="12"
-            android:singleLine="true"
-            android:inputType="textVisiblePassword|textCapCharacters|textCapWords"
-         >
-
-            <requestFocus />
-        </EditText>
-        </LinearLayout>
-</FrameLayout>
-<FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"            
-            android:background="@drawable/my_border">
-        <Button
-            android:id="@+id/buttonOk"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"			android:background="@drawable/btn_ok_bg"
-			style ="@style/main_menu"	
-            android:text="" />
-        </FrameLayout>
-        
-<FrameLayout
-    android:layout_marginTop="80dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"            
-            android:background="@drawable/my_border">
-        
-        <Button
-            android:id="@+id/buttonFTPTest"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/transfer" />
-        </FrameLayout>
-        
-
-    	<TextView
-    	    android:layout_marginTop="30dp"
-            android:id="@+id/tvDeviceIDMain"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" 
-            android:textSize="30dp"
+            android:padding="5dp"
+            android:textSize="20dp"
             android:textStyle="bold"
-            android:gravity="center"
-             />
-         
-        
+            android:inputType="textCapCharacters" />
     </LinearLayout>
-<!-- </RelativeLayout> -->
+
+    <Button
+        android:id="@+id/buttonOk"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/btn_ok_bg"
+        style ="@style/main_menu"
+        android:text="" />
+
+    <Button
+        android:layout_marginTop="50dp"
+        android:id="@+id/buttonFTPTest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/curved_button"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:text="Transfer" />
+
+    <TextView
+        android:layout_marginBottom="30dp"
+        android:id="@+id/tvDeviceIDMain"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textSize="40dp"
+        android:textStyle="bold"
+        android:gravity="center|bottom" />
+</LinearLayout>

@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context=".PageFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvundangundang"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Peruntukan Undang-Undang:"
+                android:textColor="@color/red_base"
+                android:textStyle="bold"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <Spinner
+                android:id="@+id/spinnerundangundang"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@drawable/slim_spinner_normal"
+                android:spinnerMode="dropdown"/>
+
+            <TextView
+                android:id="@+id/tvSeksyenKaedah"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Seksyen / Kaedah:"
+                android:textColor="@color/red_base"
+                android:textStyle="bold"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <Spinner
+                android:id="@+id/spinnerSeksyenKaedah"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@drawable/slim_spinner_normal"
+                android:spinnerMode="dropdown"/>
+
+            <TextView
+                android:id="@+id/tvKesalahan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Kesalahan:"
+                android:textStyle="bold"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <EditText
+                android:id="@+id/etKesalahan"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:scrollbars="vertical"
+                android:gravity="top"
+                android:padding="5dp"
+                android:layout_margin="10dp"
+                android:textStyle="bold"
+                android:editable="false"
+                android:background="@drawable/bordered_disabled_textbox" />
+
+            <TextView
+                android:id="@+id/tvButirButir"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Butir-Butir:"
+                android:textStyle="bold"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <EditText
+                android:id="@+id/etButirButir"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:scrollbars="vertical"
+                android:gravity="top"
+                android:padding="5dp"
+                android:layout_margin="10dp"
+                android:textStyle="bold"
+                android:maxLength="100"
+                android:inputType="textMultiLine|textCapCharacters"
+                android:background="@drawable/bordered_textbox" />
+
+            <TextView
+                android:id="@+id/tvkawasan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Kawasan:"
+                android:textColor="@color/red_base"
+                android:textStyle="bold"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <Spinner
+                android:id="@+id/spinnerKawasan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@drawable/slim_spinner_normal"
+                android:spinnerMode="dropdown"/>
+
+            <TextView
+                android:id="@+id/tvTempatJalan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tempat / Jalan:"
+                android:textColor="@color/red_base"
+                android:textStyle="bold"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <Spinner
+                android:id="@+id/spinnerTempatJalan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@drawable/slim_spinner_normal"
+                android:spinnerMode="dropdown" />
+
+            <EditText
+                android:id="@+id/etSummonLocation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bordered_textbox"
+                android:padding="5dp"
+                android:layout_margin="10dp"
+                android:inputType="textCapCharacters"
+                android:textStyle="bold"
+                android:maxLength="20"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/tvButiranLokasi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Butiran Lokasi:"
+                android:textStyle="bold"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <EditText
+                android:id="@+id/etButiranLokasi"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:scrollbars="vertical"
+                android:gravity="top"
+                android:padding="5dp"
+                android:layout_margin="10dp"
+                android:textStyle="bold"
+                android:maxLength="100"
+                android:inputType="textMultiLine|textCapCharacters"
+                android:background="@drawable/bordered_textbox" />
+
+            <TextView
+                android:id="@+id/tvNoPetakTiang"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No. Petak / Tiang:"
+                android:textStyle="bold"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <EditText
+                android:id="@+id/etNoPetakTiang"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bordered_textbox"
+                android:padding="5dp"
+                android:layout_margin="10dp"
+                android:inputType="textCapCharacters"
+                android:textStyle="bold"
+                android:maxLength="20" />
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

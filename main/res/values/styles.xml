@@ -2,7 +2,7 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+
     </style>
 
     <style name="scrollView">
@@ -10,7 +10,6 @@
     </style>
 
     <style name="AppTheme.Background" parent="Theme.AppCompat.NoActionBar">
-        <item name="android:windowBackground">@drawable/login</item>
 
         <item name="colorControlNormal">@color/aluminum</item>
         <item name="colorControlActivated">@color/black</item>
@@ -116,4 +115,55 @@
         <item name="textAllCaps">false</item>
     </style>
 
+	<style name="main_menu">
+	    <item name="android:layout_width">match_parent</item>
+	    <item name="android:layout_height">55dip</item>
+	    <item name="android:textColor">@color/menu_text_color</item>
+	    <item name="android:gravity">center</item>
+	    <!--
+	    <item name="android:layout_marginLeft">45dip</item>
+	    <item name="android:layout_marginRight">45dip</item>
+	     -->
+	    <item name="android:textSize">30sp</item>
+	    <item name="android:textStyle">bold</item>
+	    <item name="android:shadowColor">@color/menu_shadow_color</item>
+	    <item name="android:shadowDx">1</item>
+	    <item name="android:shadowDy">1</item>
+	    <item name="android:shadowRadius">4</item>       
+	</style>
+	
+	<style name="main_menu_btnTop" parent="main_menu">
+	    <item name="android:layout_marginTop">30dip</item>
+	</style>
+	
+	<style name="main_menu_btnNormal" parent="main_menu">
+	    <item name="android:layout_marginTop">12dip</item>
+	</style>
+	<style name="calendar_event_style" parent="@android:style/TextAppearance.Small">
+        <item name="android:textColor">#FF6600</item>
+        <item name="android:textStyle">bold
+		</item>
+        <item name="android:textSize">8sp</item>
+    </style>
+     <style name="text_normal" parent="@android:style/TextAppearance.Medium">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">5px</item>
+        <item name="android:textColor">@color/text_color</item>
+        <item name="android:textSize">20px</item>
+    </style>
+
+    <style name="text_box" parent="@android:style/TextAppearance.Medium">
+        <item name="android:imeOptions">actionSend|flagNoAccessoryAction</item>
+        <item name="android:inputType">textVisiblePassword|textShortMessage|textCapCharacters|textNoSuggestions</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingLeft">15px</item>
+        <item name="android:textColor">@color/text_color</item>
+        <item name="android:background">@drawable/textbox</item>
+        <item name="android:textSize">30px</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:longClickable">false</item>
+        <item name="android:selectAllOnFocus">true</item>
+    </style>
 </resources>

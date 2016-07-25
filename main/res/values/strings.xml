@@ -1,4 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">PPJ Enforcement Application</string>
-    <string name="action_logout">Logout</string>
+	<string name="transfer">Transfer Notis</string>
+    <string name="version">1.0.0.0</string>
+    <string name="app_name">PPJ Handheld</string>
+    <string name="menu_logout">Logout</string>
+    <string name="title_activity_login">Form Login</string>
+    <string name="btnOK">OK</string>
+    <string name="btnLogin">Login</string>
+    <string name="Masa">Masa:</string>
+    <string name="Tarikh">Tarikh:</string>
+    <string name="MacAddress">MAC Address</string>
+    <string name="NewPrinter">Pencetak Baru</string>
+    <string name="title_section3">Ringkasan</string>
+    <string name="title_section2">Kesalahan</string>
+    <string name="title_section1">Maklumat</string>
+    <string name="title_activity_noticeissuance">Form Notis</string>
+    <string name="title_activity_notices">Form Notis</string>
+    <string name="title_activity_maklumat">Form Maklumat</string>
+    <string name="title_activity_kesalahan">Form Kesalahan</string>
+    <string name="title_activity_ringkasan">Form Ringkasan</string>
+    <string name="title_activity_image">ImageActivity</string>
+	<string name="title_activity_transfer">Form Transfer</string>
 </resources>

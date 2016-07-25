@@ -2,13 +2,13 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android" >
     
 <item android:state_window_focused="false" android:state_enabled="true"
-		android:drawable="@drawable/btnkamera_new" />﻿
+		android:drawable="@drawable/btnkamera" />﻿
 	<item android:state_window_focused="false" android:state_enabled="false"
-		android:drawable="@drawable/btnkamera_new" />
-	<item android:state_pressed="true" android:drawable="@drawable/btnkamera_new_active2" />
+		android:drawable="@drawable/btnkamera" />
+	<item android:state_pressed="true" android:drawable="@drawable/btnkamera_active" />
 	<item android:state_focused="true" android:state_enabled="true"
-		android:drawable="@drawable/btnkamera_new_active2" />
-	<item android:state_enabled="true" android:drawable="@drawable/btnkamera_new" />
-	<item android:state_focused="true" android:drawable="@drawable/btnkamera_new_active2" />
-	<item android:drawable="@drawable/btnkamera_new" />
+		android:drawable="@drawable/btnkamera_active" />
+	<item android:state_enabled="true" android:drawable="@drawable/btnkamera" />
+	<item android:state_focused="true" android:drawable="@drawable/btnkamera_active" />
+	<item android:drawable="@drawable/btnkamera" />
 </selector>

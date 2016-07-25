@@ -2,13 +2,13 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android" >
     
 <item android:state_window_focused="false" android:state_enabled="true"
-		android:drawable="@drawable/btnok_new" />﻿
+		android:drawable="@drawable/btnok" />﻿
 	<item android:state_window_focused="false" android:state_enabled="false"
-		android:drawable="@drawable/btnok_new" />
-	<item android:state_pressed="true" android:drawable="@drawable/btnok_new_active2" />
+		android:drawable="@drawable/btnok" />
+	<item android:state_pressed="true" android:drawable="@drawable/btnok_active" />
 	<item android:state_focused="true" android:state_enabled="true"
-		android:drawable="@drawable/btnok_new_active2" />
-	<item android:state_enabled="true" android:drawable="@drawable/btnok_new" />
-	<item android:state_focused="true" android:drawable="@drawable/btnok_new_active2" />
-	<item android:drawable="@drawable/btnok_new" />
+		android:drawable="@drawable/btnok_active" />
+	<item android:state_enabled="true" android:drawable="@drawable/btnok" />
+	<item android:state_focused="true" android:drawable="@drawable/btnok_active" />
+	<item android:drawable="@drawable/btnok" />
 </selector>

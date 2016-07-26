@@ -1,8 +1,11 @@
 package com.test.averis.testapplication;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -11,6 +14,11 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,6 +28,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 import java.io.File;
@@ -40,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
 
+        checkExternalStoragePermissions();
+
         RefreshData();
         Button btn_continue = (Button) findViewById(R.id.btn_ok);
         btn_continue.setOnClickListener(new View.OnClickListener() {
@@ -51,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
         Button btn_capture = (Button) findViewById(R.id.btn_capture);
         btn_capture.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                /*
                 File dir = new File("/mnt/sdcard/CustomImageDir");
                 if (!dir.exists()) {
                     dir.mkdirs();
@@ -62,8 +72,8 @@ public class MainActivity extends AppCompatActivity {
                     File photo = new File(dir, "Pic" + CacheManager.imageIndex + ".jpg");
                     try {
                         photo.createNewFile();
-                        photo.setReadable(true, false);
-                        photo.setWritable(true, false);
+                        photo.setReadable(true);
+                        photo.setWritable(true);
                     } catch (Exception e) {
 
                     }
@@ -72,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
                     imageUri = Uri.fromFile(photo);
                     startActivityForResult(intent, TAKE_PICTURE);
                 }
-                */
             }
         });
 
@@ -85,11 +94,12 @@ public class MainActivity extends AppCompatActivity {
                         Uri imgUri = Uri.parse(spinner_image.getSelectedItem().toString());
                         File file = new File(imgUri.getPath());
                         if (file.exists()) {
-                            file.getAbsoluteFile().delete();
-                            if(!file.exists()) {
-                                callBroadCast();
-                                CacheManager.ImageLocation.remove(spinner_image.getSelectedItem().toString());
-                                RefreshData();
+                            if(file.getAbsoluteFile().delete()) {
+                                if (!file.exists()) {
+                                    CacheManager.ImageLocation.remove(spinner_image.getSelectedItem().toString());
+                                    RefreshData();
+                                    callBroadCast();
+                                }
                             }
                         }
                     } catch (Exception e) {
@@ -98,6 +108,61 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    int REQUEST_STORAGE = 1;
+    private void checkExternalStoragePermissions() {
+        if (hasStoragePermissionGranted()) {
+            //You can do what whatever you want to do as permission is granted
+        } else {
+            requestExternalStoragePermission();
+        }
+    }
+
+    public boolean hasStoragePermissionGranted(){
+        return ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    public void requestExternalStoragePermission() {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            ActivityCompat.requestPermissions(MainActivity.this, new String[] { Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE }, REQUEST_STORAGE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        LinearLayout mainLayout = (LinearLayout)findViewById(R.id.mainLayout);
+        if (requestCode == REQUEST_STORAGE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                //User allow from permission dialog
+                //You can do what whatever you want to do as permission is granted
+            } else if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                //User has deny from permission dialog
+                Snackbar.make(mainLayout, "Please enable storage permission", Snackbar.LENGTH_INDEFINITE)
+                        .setAction("OK", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                ActivityCompat.requestPermissions(MainActivity.this, new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE }, REQUEST_STORAGE);
+                            }
+                        })
+                        .show();
+            } else {
+                // User has deny permission and checked never show permission dialog so you can redirect to Application settings page
+                Snackbar.make(mainLayout, "Please enable permission from settings", Snackbar.LENGTH_INDEFINITE)
+                        .setAction("OK", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Intent intent = new Intent();
+                                intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                Uri uri = Uri.fromParts("package", MainActivity.this.getPackageName(), null);
+                                intent.setData(uri);
+                                startActivity(intent);
+                            }
+                        })
+                        .show();
+            }
+        }
     }
 
     public void callBroadCast() {
@@ -115,19 +180,8 @@ public class MainActivity extends AppCompatActivity {
     private void RefreshData()
     {
         List<String> list = new ArrayList<String>();
-        //for(String item : CacheManager.ImageLocation) {
-        //    list.add(item);
-        //}
-
-        File dir = new File("/mnt/sdcard/CustomImageDir");
-        if (!dir.exists()) {
-            dir.mkdirs();
-        }
-
-        if(dir.isDirectory()) {
-            for (File item : dir.listFiles()) {
-                list.add(item.getAbsolutePath());
-            }
+        for(String item : CacheManager.ImageLocation) {
+            list.add(item);
         }
 
         Spinner spinner_image = (Spinner) findViewById(R.id.spinner_images);
@@ -144,9 +198,8 @@ public class MainActivity extends AppCompatActivity {
                 ImageView img = (ImageView) findViewById(R.id.img_view);
                 if(pos > 0)
                 {
-                    //Uri imgUri = Uri.parse(parent.getSelectedItem().toString());
-                    //File file = new File(imgUri.getPath());
-                    File file = new File(parent.getSelectedItem().toString());
+                    Uri imgUri = Uri.parse(parent.getSelectedItem().toString());
+                    File file = new File(imgUri.getPath());
                     if(file.exists()){
                         BitmapFactory.Options options;
                         Bitmap bitmap = null;
@@ -239,19 +292,6 @@ public class MainActivity extends AppCompatActivity {
                         CacheManager.ImageLocation.add(selectedImage.toString());
                         CacheManager.imageIndex++;
                         RefreshData();
-
-                        try {
-                            Bitmap photo = BitmapFactory.decodeFile(image.getPath());
-                            FileOutputStream out = new FileOutputStream(image);
-                            photo.compress(Bitmap.CompressFormat.PNG, 90, out);
-                            out.flush();
-                            out.close();
-                        } catch (Exception e) {
-                            String temp = e.getMessage();
-                            int i = 0;
-                            int b = 1;
-                            i = i + b;
-                        }
                     }
                 }
         }
